@@ -13,12 +13,13 @@ import com.baomidou.mybatisplus.annotation.TableId;
  
 public class GameInfo {
     @TableId
-    @ExcelProperty("游戏id")
+    @ExcelProperty(value = "游戏编号")
     protected int gameid;
     @TableId
-    @ExcelProperty("日期")
+    @ExcelProperty(value = "日期",index = 0)
     protected String ds;
     @TableId
+    @ExcelProperty(value = "平台编号")
     protected int snid;
 
     public int getGameid() {

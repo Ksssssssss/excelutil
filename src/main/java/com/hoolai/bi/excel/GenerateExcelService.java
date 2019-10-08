@@ -1,7 +1,6 @@
 package com.hoolai.bi.excel;
 
 import com.alibaba.excel.EasyExcel;
-import com.alibaba.excel.EasyExcelFactory;
 import com.alibaba.excel.ExcelWriter;
 import com.alibaba.excel.write.metadata.WriteSheet;
 import com.alibaba.excel.write.metadata.WriteTable;
@@ -9,7 +8,6 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.hoolai.bi.entiy.DateUtil;
-import com.hoolai.bi.entiy.GameInfo;
 import com.hoolai.bi.entiy.daily.DailyOsStats;
 import com.hoolai.bi.entiy.daily.DailyStats;
 import com.hoolai.bi.entiy.SheetNameEnum;
@@ -18,18 +16,15 @@ import com.hoolai.bi.mapper.DailyCreativeStatsMapper;
 import com.hoolai.bi.mapper.DailyOsStatsMapper;
 import com.hoolai.bi.mapper.DailyStatsMapper;
 import com.hoolai.bi.mapper.RetentionMapper;
+import org.ehcache.core.internal.util.CollectionUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import javax.servlet.http.HttpServletResponse;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.EnumMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -49,15 +44,15 @@ public class GenerateExcelService {
     private DailyCreativeStatsMapper dailyCreativeStatsMapper;
     @Autowired
     private RetentionMapper retentionMapper;
+    private static final int SUIT_DAY = 30;
 
     /**
-     *
      * @param response
      * @param startDs
      * @param endDs
      * @param gameId
-     * @description 动态生成sheet
      * @throws IOException
+     * @description 动态生成sheet
      */
     public void repeatedWrite(HttpServletResponse response, String startDs, String endDs, int gameId) throws IOException {
         ExcelWriter excelWriter = EasyExcel.write(response.getOutputStream()).build();
@@ -65,9 +60,6 @@ public class GenerateExcelService {
         WriteSheet writeSheet = null;
 
         Map<SheetNameEnum, List<DailyStats>> datas = reportData(startDs, endDs, gameId);
-        Map<String, List<ShareRetentionResultType>> retentionDatas = retentionData(startDs, endDs, gameId);
-        List<ShareRetentionResultType> retentionResultTypes = retentionMapper.queryRetens(1, startDs, endDs);
-        Map<String, List<ShareRetentionResultType>> retentionMap = retentionResultTypes.stream().collect(Collectors.groupingBy(retention -> retention.getDs()));
         int i = 0;
         for (SheetNameEnum sheetName : datas.keySet()) {
             List<DailyStats> data = datas.get(sheetName);
@@ -76,6 +68,9 @@ public class GenerateExcelService {
             excelWriter.write(data, writeSheet);
             i++;
         }
+
+        List<ShareRetentionResultType> retentionResultTypes = retentionMapper.queryRetens(gameId, startDs, endDs);
+        Map<String, List<ShareRetentionResultType>> retentionMap = retentionResultTypes.stream().collect(Collectors.groupingBy(retention -> retention.getDs()));
 
         writeSheet = EasyExcel.writerSheet(i, SheetNameEnum.RETWNTION.getName()).needHead(Boolean.FALSE).build();
         List<List<Object>> rows = rows(startDs, endDs, retentionMap);
@@ -87,12 +82,12 @@ public class GenerateExcelService {
     }
 
     /**
-     * @
      * @param startDs
      * @param endDs
      * @param gameId
-     * @description:返回日报集合
      * @return
+     * @
+     * @description:返回日报集合
      */
     public Map<SheetNameEnum, List<DailyStats>> reportData(String startDs, String endDs, int gameId) {
         EnumMap<SheetNameEnum, List<DailyStats>> result = Maps.newEnumMap(SheetNameEnum.class);
@@ -113,27 +108,39 @@ public class GenerateExcelService {
         List<List<Object>> rows = new ArrayList<>();
         DecimalFormat df = new DecimalFormat("0.00%");
         int intervalDay = 0;
+        int suitDay = chooseSuitDayNum(DateUtil.dateCompare(endDs, startDs));
         for (String ds = startDs; DateUtil.dateCompare(endDs, ds) >= 0; ds = DateUtil.dateIncr(ds)) {
             List<ShareRetentionResultType> shareRetentionResultTypes = retentionMap.get(ds);
             if (CollectionUtils.isEmpty(shareRetentionResultTypes)) {
                 continue;
             }
             intervalDay = DateUtil.dateCompare(endDs, ds);
+
+            intervalDay = chooseSuitDayNum(intervalDay);
+            if (intervalDay <= 0) return rows;
+
             List<Object> row = Lists.newLinkedList();
-            for (int i = 0; i <= intervalDay; i++) {
-                if (intervalDay==0){
-                    break;
-                }
+
+            for (int i = 0; i <= suitDay + intervalDay; i++) {
                 if (i == 0) {
                     row.add(ds);
+                    row.add(shareRetentionResultTypes.stream().findAny().get().getInstallNum());
                     continue;
                 }
-                row.add("_");
-            }
-            for (ShareRetentionResultType shareRetentionResultType : shareRetentionResultTypes) {
-                if (shareRetentionResultType.getDr() <= intervalDay) {
-                    row.set(shareRetentionResultType.getDr(), df.format(shareRetentionResultType.getRetentionPercentages()));
+                if (i <= intervalDay) {
+                    row.add("0%");
+                    continue;
                 }
+                if (i > suitDay && i <= suitDay + intervalDay) {
+                    row.add(0);
+                    continue;
+                }
+                row.add("");
+            }
+
+            for (ShareRetentionResultType shareRetentionResultType : shareRetentionResultTypes) {
+                row.set(shareRetentionResultType.getDr() + 1, df.format(shareRetentionResultType.getRetentionPercentages()));
+                row.set(suitDay + shareRetentionResultType.getDr() + 1, shareRetentionResultType.getRetention());
             }
             rows.add(new ArrayList<>(row));
         }
@@ -148,14 +155,19 @@ public class GenerateExcelService {
      */
     private List<List<String>> headLists(String startDs, String endDs) {
         List<List<String>> headList = new ArrayList<>();
-        for (int i = 0; i <= DateUtil.dateCompare(endDs, startDs); i++) {
-            List<String> title = Lists.newArrayListWithCapacity(1);
+        int suitDay = chooseSuitDayNum(DateUtil.dateCompare(endDs, startDs));
+
+        for (int i = 0; i <= suitDay; i++) {
             if (i == 0) {
-                title.add("日期");
-            } else {
-                title.add(i + "日留存");
+                headList.add(Collections.singletonList("日期"));
+                headList.add(Collections.singletonList("安装数"));
+                continue;
             }
-            headList.add(title);
+            headList.add(Collections.singletonList(i + "日留存"));
+        }
+
+        for (int i = 1; i <= suitDay; i++) {
+            headList.add(Collections.singletonList(i + "日留存人数"));
         }
         return headList;
     }
@@ -183,4 +195,13 @@ public class GenerateExcelService {
         result = retentionMapper.queryRetens(gameId, startDs, endDs).stream().collect(Collectors.groupingBy(retention -> retention.getDs() + gameId));
         return result;
     }
+
+
+    private int chooseSuitDayNum(int intervalDay) {
+        if (intervalDay > SUIT_DAY) {
+            intervalDay = SUIT_DAY;
+        }
+        return intervalDay;
+    }
+
 }

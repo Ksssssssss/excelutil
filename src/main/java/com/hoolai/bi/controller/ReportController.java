@@ -31,7 +31,7 @@ public class ReportController {
         response.setContentType("application/vnd.ms-excel");
         response.setCharacterEncoding("utf-8");
 
-        String fileName = URLEncoder.encode("日报", "UTF-8");
+        String fileName = URLEncoder.encode("日报" + endDs, "UTF-8");
         response.setHeader("Content-disposition", "attachment;filename=" + fileName + ".xlsx");
         excelService.repeatedWrite(response, startDs, endDs, gameId);
     }
