@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hoolai.bi.mapper.RetentionMapper">
+
+    <sql id="share">
+        ds,dr,retention
+    </sql>
+
+    <select id="queryRetentionList" resultType="com.hoolai.bi.entiy.retention.ShareRetentionResultType">
+        select <include refid="share"></include> from retention
+        <where>
+            <if test="gameid != null and gameid != ''">
+                gameid = #{gameid}
+            </if>
+        </where>
+        and ds >= DAT E_SUB(curdate(),INTERVAL #{data} DAY)
+        ORDER BY ds desc,dr asc
+    </select>
+
+    <select id="queryRetens" resultType="com.hoolai.bi.entiy.retention.ShareRetentionResultType">
+        SELECT t_1.gameid,t_1.snid,t_3.retention,t_3.ds,t_1.install_num,t_3.dr,ROUND(t_3.retention/t_1.install_num,2) retentionPercentages
+        from
+        (SELECT gameid,snid,ds,install_num FROM daily_stats WHERE ds>=#{startDs} AND gameid=#{gameId}) t_1
+        JOIN
+        (SELECT ds,dr,retention FROM(
+        SELECT DATE_SUB(ds,INTERVAL dr DAY) ds,dr,retention
+        FROM
+        retention
+        WHERE
+        gameid=#{gameId}
+        AND
+        ds>=DATE_SUB(#{endDs}, INTERVAL DATEDIFF(#{endDs},#{startDs}) DAY)) t_2
+        WHERE t_2.ds>=#{startDs}
+        and t_2.ds&lt;=#{endDs} ORDER BY ds) t_3 ON t_1.ds=t_3.ds
+        ORDER BY ds,dr
+    </select>
+</mapper>
