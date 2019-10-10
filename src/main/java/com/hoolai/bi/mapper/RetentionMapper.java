@@ -1,6 +1,6 @@
 package com.hoolai.bi.mapper;
 
-import com.hoolai.bi.entiy.retention.ShareRetentionResultType;
+import com.hoolai.bi.entiy.retention.ShareRetention;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -12,7 +12,7 @@ import java.util.List;
  */
 public interface RetentionMapper {
 
-	List<ShareRetentionResultType> queryRetentionList(int gameid, int data);
+	List<ShareRetention> queryRetentionList(int gameid, int data);
 
-	List<ShareRetentionResultType> queryRetens(@Param("gameId") int gameid,@Param("startDs") String startDs, @Param("endDs") String endDs);
+	List<ShareRetention> queryRetens(@Param("gameId") int gameid, @Param("startDs") String startDs, @Param("endDs") String endDs);
 }

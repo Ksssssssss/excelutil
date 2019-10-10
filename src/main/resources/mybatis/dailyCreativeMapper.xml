@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hoolai.bi.mapper.DailyCreativeStatsMapper">
+
+    <sql id="share">
+          ds,gameid,creative,snid
+    </sql>
+
+    <select id="queryCreativeList" resultType="com.hoolai.bi.entiy.daily.DailyCreativeStats">
+        select ds,gameid,creative,snid,
+        SUM( dau_num ) dau_num,
+        SUM(install_num) install_num,
+        SUM( pay_count ) pay_count,
+        SUM( pay_times ) pay_times,
+        SUM( pay_amount ) pay_amount,
+        SUM( pay_install_count ) pay_install_count,
+        SUM( pay_install_times ) pay_install_times,
+        SUM( pay_install_amount ) pay_install_amount,
+        SUM( new_pay_count ) new_pay_count,
+        SUM( new_pay_times ) new_pay_times,
+        SUM( new_pay_amount ) new_pay_amount
+        FROM
+        daily_os_creative_stats
+        WHERE
+        gameid=#{gameId}
+        AND
+        ds >=#{startDs}
+        AND ds&lt;=#{endDs}
+        GROUP BY
+        ds,
+        gameid,
+        creative,
+        snid
+    </select>
+
+</mapper>

@@ -6,7 +6,7 @@
         ds,dr,os,creative,ROUND(retention/install_num*100,2 ) as retentionPercentages
     </sql>
 
-    <select id="queryRetentionOsCreativeDeviceList" resultType="com.hoolai.bi.entiy.retention.ShareRetentionResultType">
+    <select id="queryRetentionOsCreativeDeviceList" resultType="com.hoolai.bi.entiy.retention.ShareRetention">
         select <include refid="share"></include>
         from (select gameid,(DATE_SUB(ds,INTERVAL dr DAY)) as ds, os, creative,dr,retention from retention_os_creative_device where (gameid = #{gameid} and ds >= DATE_SUB(curdate(),INTERVAL #{data} DAY))) p
         left join (select * from daily_os_creative_stats_device where (gameid = #{gameid} and ds >= DATE_SUB(curdate(),INTERVAL #{data} DAY))) b

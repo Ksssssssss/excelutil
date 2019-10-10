@@ -3,6 +3,9 @@ package com.hoolai.bi.mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.hoolai.bi.entiy.daily.DailyCreativeStats;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
  *
@@ -13,4 +16,5 @@ import org.apache.ibatis.annotations.Mapper;
  */
  @Mapper
 public interface DailyCreativeStatsMapper extends BaseMapper<DailyCreativeStats> {
+ List<DailyCreativeStats> queryCreativeList(@Param("gameId") int gameid, @Param("startDs") String startDs, @Param("endDs") String endDs);
 }

@@ -1,7 +1,6 @@
 package com.hoolai.bi.entiy.retention;
 
 import com.alibaba.excel.annotation.ExcelProperty;
-import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.hoolai.bi.entiy.GameInfo;
 
@@ -12,7 +11,7 @@ import java.util.List;
  * Date:     2019-08-05 14:49
  * Description:
  */
-public class ShareRetentionResultType extends GameInfo {
+public class ShareRetention extends GameInfo {
 
     @TableId
     @ExcelProperty("第几日留存")
@@ -24,19 +23,15 @@ public class ShareRetentionResultType extends GameInfo {
     @ExcelProperty("留存率")
     private float retentionPercentages = 0;
 
-    public ShareRetentionResultType() {
+    public ShareRetention() {
     }
 
-    public ShareRetentionResultType(String ds, int dr, int retention, String os, String creative, int clientid, String retentionPercentage, float retentionPercentages) {
+    public ShareRetention(String ds, int dr, int retention, String os, String creative, int clientid, String retentionPercentage, float retentionPercentages) {
         this.ds = ds;
         this.dr = dr;
         this.retention = retention;
 
         this.retentionPercentages = retentionPercentages;
-    }
-
-    public static String comparingByDs(List<ShareRetentionResultType> retentionResultTypes){
-        return retentionResultTypes.stream().findFirst().get().getDs();
     }
 
     public String getDs() {
@@ -81,7 +76,7 @@ public class ShareRetentionResultType extends GameInfo {
 
     @Override
     public String toString() {
-        return "ShareRetentionResultType{" +
+        return "ShareRetention{" +
                 "dr=" + dr +
                 ", retention=" + retention +
                 ", installNum=" + installNum +

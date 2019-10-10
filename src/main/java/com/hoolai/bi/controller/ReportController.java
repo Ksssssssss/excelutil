@@ -1,11 +1,8 @@
 package com.hoolai.bi.controller;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.hoolai.bi.entiy.daily.DailyOsStats;
-import com.hoolai.bi.entiy.daily.DailyStats;
-import com.hoolai.bi.excel.GenerateExcelService;
-import com.hoolai.bi.mapper.DailyOsStatsMapper;
-import com.hoolai.bi.mapper.DailyStatsMapper;
+import com.alibaba.excel.EasyExcel;
+import com.alibaba.excel.ExcelWriter;
+import com.hoolai.bi.entiy.ReportType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -13,8 +10,6 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.URLEncoder;
-import java.util.List;
-import java.util.Map;
 
 /**
  * @description:
@@ -23,16 +18,33 @@ import java.util.Map;
  */
 @RestController
 public class ReportController {
-    @Autowired
-    private GenerateExcelService excelService;
 
     @RequestMapping("/api/report/generateReport")
     public void generateReport(HttpServletResponse response, String startDs, String endDs, int gameId) throws IOException {
-        response.setContentType("application/vnd.ms-excel");
+        response.setContentType("application/vnd.ms-service");
         response.setCharacterEncoding("utf-8");
 
         String fileName = URLEncoder.encode("日报" + endDs, "UTF-8");
         response.setHeader("Content-disposition", "attachment;filename=" + fileName + ".xlsx");
-        excelService.repeatedWrite(response, startDs, endDs, gameId);
+        repeatedWrite(response, startDs, endDs, gameId);
+    }
+
+    /**
+     * @param response
+     * @param startDs
+     * @param endDs
+     * @param gameId
+     * @throws IOException
+     * @description 动态生成sheet
+     */
+    public void repeatedWrite(HttpServletResponse response, String startDs, String endDs, int gameId) throws IOException {
+        ExcelWriter excelWriter = EasyExcel.write(response.getOutputStream()).build();
+
+        int i = 0;
+        for (ReportType sheetName : ReportType.values()) {
+            sheetName.write(startDs,endDs,gameId,excelWriter,i);
+            i++;
+        }
+        excelWriter.finish();
     }
 }

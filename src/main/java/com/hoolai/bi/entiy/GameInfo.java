@@ -1,6 +1,7 @@
 package com.hoolai.bi.entiy;
 
 import com.alibaba.excel.annotation.ExcelProperty;
+import com.alibaba.excel.annotation.write.style.ColumnWidth;
 import com.baomidou.mybatisplus.annotation.TableId;
 
 /**
@@ -17,6 +18,7 @@ public class GameInfo {
     protected int gameid;
     @TableId
     @ExcelProperty(value = "日期",index = 0)
+    @ColumnWidth(20)
     protected String ds;
     @TableId
     @ExcelProperty(value = "平台编号")

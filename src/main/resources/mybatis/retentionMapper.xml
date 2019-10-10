@@ -6,7 +6,7 @@
         ds,dr,retention
     </sql>
 
-    <select id="queryRetentionList" resultType="com.hoolai.bi.entiy.retention.ShareRetentionResultType">
+    <select id="queryRetentionList" resultType="com.hoolai.bi.entiy.retention.ShareRetention">
         select <include refid="share"></include> from retention
         <where>
             <if test="gameid != null and gameid != ''">
@@ -17,10 +17,10 @@
         ORDER BY ds desc,dr asc
     </select>
 
-    <select id="queryRetens" resultType="com.hoolai.bi.entiy.retention.ShareRetentionResultType">
-        SELECT t_1.gameid,t_1.snid,t_3.retention,t_3.ds,t_1.install_num,t_3.dr,ROUND(t_3.retention/t_1.install_num,2) retentionPercentages
+    <select id="queryRetens" resultType="com.hoolai.bi.entiy.retention.ShareRetention">
+        SELECT t_1.gameid,t_1.snid,t_3.retention,t_3.ds,t_1.install_num,t_3.dr,ROUND(t_3.retention/t_1.install_num,4) retentionPercentages
         from
-        (SELECT gameid,snid,ds,install_num FROM daily_stats WHERE ds>=#{startDs} AND gameid=#{gameId}) t_1
+        (SELECT gameid,snid,ds,install_num FROM daily_stats WHERE ds>=#{startDs} and ds&lt;=#{endDs}	AND gameid=#{gameId}) t_1
         JOIN
         (SELECT ds,dr,retention FROM(
         SELECT DATE_SUB(ds,INTERVAL dr DAY) ds,dr,retention
@@ -29,9 +29,8 @@
         WHERE
         gameid=#{gameId}
         AND
-        ds>=DATE_SUB(#{endDs}, INTERVAL DATEDIFF(#{endDs},#{startDs}) DAY)) t_2
-        WHERE t_2.ds>=#{startDs}
-        and t_2.ds&lt;=#{endDs} ORDER BY ds) t_3 ON t_1.ds=t_3.ds
+        ds>=#{startDs}
+				and ds&lt;=#{endDs}) t_2) t_3 ON t_1.ds=t_3.ds
         ORDER BY ds,dr
     </select>
 </mapper>
