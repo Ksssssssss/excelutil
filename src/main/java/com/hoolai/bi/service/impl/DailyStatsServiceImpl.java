@@ -23,6 +23,7 @@ public class DailyStatsServiceImpl extends DailyReportService {
     @Autowired
     private DailyStatsMapper dailyStatsMapper;
 
+    @Override
     public List<DailyStats> produceData(String startDs, String endDs, int gameId) {
         return dailyStatsMapper.selectList(new LambdaQueryWrapper<DailyStats>().ge(DailyStats::getDs, startDs).le(DailyStats::getDs, endDs).eq(DailyStats::getGameid, gameId));
     }

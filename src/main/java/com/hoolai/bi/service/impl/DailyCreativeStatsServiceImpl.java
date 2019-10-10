@@ -25,6 +25,7 @@ public class DailyCreativeStatsServiceImpl extends DailyReportService {
     @Autowired
     private DailyCreativeStatsMapper dailyCreativeStatsMapper;
 
+    @Override
     public List<DailyStats> produceData(String startDs, String endDs, int gameId) {
         List<DailyCreativeStats> dailyCreativeStatsList = dailyCreativeStatsMapper.queryCreativeList(gameId,startDs,endDs);
 

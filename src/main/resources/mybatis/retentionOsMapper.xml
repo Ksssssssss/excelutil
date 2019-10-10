@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hoolai.bi.mapper.RetentionOsMapper">
+
+    <sql id="share">
+        ds,dr,retention
+    </sql>
+
+    <select id="queryRetentionOs" resultType="com.hoolai.bi.entiy.retention.ShareOsRetention">
+        SELECT t_1.gameid,t_1.snid,t_3.retention,t_3.ds,t_1.install_num,t_3.dr,t_3.os ,ROUND(t_3.retention/t_1.install_num,4) retentionPercentages
+        from
+        (SELECT gameid,snid,ds,os,install_num FROM daily_os_stats WHERE ds>=#{startDs} and ds&lt;=#{endDs}	AND gameid=#{gameId}) t_1
+        JOIN
+        (SELECT ds,dr,retention,os FROM(
+        SELECT DATE_SUB(ds,INTERVAL dr DAY) ds,dr,retention,os
+        FROM
+        retention_os
+        WHERE
+        gameid=#{gameId}
+        AND
+        ds>=#{startDs}
+        and ds&lt;=#{endDs}) t_2) t_3 ON t_1.ds=t_3.ds AND t_1.os=t_3.os
+        ORDER BY ds,dr
+    </select>
+
+</mapper>

@@ -18,7 +18,7 @@ import java.util.List;
 public abstract class DailyReportService {
     public void write(String startDs, String endDs, int gameId, ExcelWriter excelWriter, int i, ReportType type){
         WriteSheet writeSheet;
-        List<DailyStats> datas = produceData(startDs, endDs, gameId);
+        List<DailyStats> datas =  produceData(startDs, endDs, gameId);
         datas.forEach(dailyStats -> dailyStats.init());
         Class clazz = datas.stream().findFirst().get().getClass();
         writeSheet = EasyExcel.writerSheet(i, type.getName()).head(clazz).build();

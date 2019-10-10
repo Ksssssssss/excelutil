@@ -11,8 +11,8 @@ import java.util.List;
  */
 
 public enum RetentionType {
-    RETENTION(1, Arrays.asList("留存","安装数")),
-    RETENTION_OS(2,Arrays.asList("留存","安装数","操作系统"));
+    RETENTION(1, Arrays.asList("日期","安装数")),
+    RETENTION_OS(2,Arrays.asList("日期","安装数","操作系统"));
 
     private int needRowLength;
     private List<String> needExcelHead;

@@ -2,11 +2,8 @@ package com.hoolai.bi.entiy;
 
 import com.alibaba.excel.ExcelWriter;
 import com.hoolai.bi.context.SpringUtils;
-import com.hoolai.bi.entiy.daily.DailyStats;
-import com.hoolai.bi.service.impl.DailyCreativeStatsServiceImpl;
-import com.hoolai.bi.service.impl.DailyOsStatsServiceImpl;
-import com.hoolai.bi.service.impl.DailyStatsServiceImpl;
-import com.hoolai.bi.service.impl.RetentionServiceImpl;
+import com.hoolai.bi.service.impl.*;
+import com.hoolai.bi.service.RetentionReportService;
 
 /**
  *
@@ -26,7 +23,13 @@ public enum ReportType {
     RETWNTION("留存"){
         @Override
         public void write(String startDs, String endDs, int gameId, ExcelWriter excelWriter, int i) {
-            SpringUtils.getBean(RetentionServiceImpl.class).writeRetention(startDs, endDs, gameId, excelWriter, i);
+            SpringUtils.getBean(RetentionServiceImpl.class).writeRetention(startDs, endDs, gameId, excelWriter, i,this);
+        }
+    },
+    RETWNTION_OS("留存(按操作系统)"){
+        @Override
+        public void write(String startDs, String endDs, int gameId, ExcelWriter excelWriter, int i) {
+            SpringUtils.getBean(RetentionOsServiceImpl.class).writeRetention(startDs, endDs, gameId, excelWriter, i,this);
         }
     },
     OS("操作系统"){
