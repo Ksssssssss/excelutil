@@ -1,10 +1,14 @@
 package com.hoolai.bi.entiy.daily;
 
+import com.alibaba.excel.annotation.ExcelIgnore;
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.hoolai.bi.context.ExtraInfoConvert;
+import com.hoolai.bi.context.ReportEnvConfig;
+import com.hoolai.bi.entiy.DateUtil;
 import com.hoolai.bi.entiy.GameInfo;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.swing.*;
 import java.util.Optional;
@@ -21,10 +25,23 @@ public class DailyStats extends GameInfo {
     private int dauNum;
     @ExcelProperty("安装")
     private int installNum;
-    @ExcelProperty("付费人数")
-    private int payCount;
+
     @ExcelProperty("付费金额（元）")
     private float payAmount;
+    @TableField(exist = false)
+    @ExcelProperty("付费率")
+    private String payRate;
+
+    @TableField(exist = false)
+    @ExcelProperty("arpu(元)")
+    private String arpu;
+
+    @TableField(exist = false)
+    @ExcelProperty("arppu(元)")
+    private String arppu;
+
+    @ExcelProperty("付费人数")
+    private int payCount;
     @ExcelProperty("付费次数")
     private int payTimes;
     @ExcelProperty("安装付费人数")
@@ -39,19 +56,6 @@ public class DailyStats extends GameInfo {
     private float newPayAmount;
     @ExcelProperty("新付费次数")
     private int newPayTimes;
-
-    @TableField(exist = false)
-    @ExcelProperty("arpu(元)")
-    private String arpu;
-
-    @TableField(exist = false)
-    @ExcelProperty("arppu(元)")
-    private String arppu;
-
-    @TableField(exist = false)
-    @ExcelProperty("付费率")
-    private String payRate;
-
     @TableField(exist = false)
     @ExcelProperty("安装付费率")
     private String installPayRate;
@@ -64,50 +68,68 @@ public class DailyStats extends GameInfo {
     @ExcelProperty("安装arppu(元)")
     private String installArppu;
 
-    @TableField(exist = false)
-    @ExcelProperty("新付费率")
-    private String newPayRate;
+//
+//    @TableField(exist = false)
+//    @ExcelProperty("新付费率")
+//    private String newPayRate;
+//
+//    @TableField(exist = false)
+//    @ExcelProperty("新付费arpu(元)")
+//    private String newPayArpu;
+//
+//    @TableField(exist = false)
+//    @ExcelProperty("新付费arppu(元)")
+//    private String newPayArppu;
 
-    @TableField(exist = false)
-    @ExcelProperty("新付费arpu(元)")
-    private String newPayArpu;
-
-    @TableField(exist = false)
-    @ExcelProperty("新付费arppu(元)")
-    private String newPayArppu;
-
-    public void init() {
-        arpu = String.format("%.4f", (float) payAmount / (float) dauNum);
-        arppu = String.format("%.4f", (float) payAmount / (float) payCount);
-        payRate = String.format("%.4f", (float) payCount / (float) dauNum * 100) + "%";
-        installPayRate = String.format("%.4f", (float) payInstallCount / (float) installNum * 100) + "%";
-        installArpu = String.format("%.4f", (float) payInstallAmount / (float) installNum);
-        installArppu = String.format("%.4f", (float) payInstallAmount / (float) payInstallCount);
+    public void init(ReportEnvConfig reportEnvConfig) {
+        initRate(reportEnvConfig.getChangeRateDs(),reportEnvConfig.getRate());
+        arpu = String.format("%.2f", checkAndGet(payAmount, dauNum));
+        arppu = String.format("%.2f", checkAndGet(payAmount, payCount));
+        payRate = String.format("%.2f", checkAndGet(payCount, dauNum) * 100) + "%";
+        installPayRate = String.format("%.2f", checkAndGet(payInstallCount, installNum) * 100) + "%";
+        installArpu = String.format("%.2f", checkAndGet(payInstallAmount, installNum));
+        installArppu = String.format("%.2f", checkAndGet(payInstallAmount, payInstallCount));
     }
 
-    public String getNewPayRate() {
-        return newPayRate;
+    private float checkAndGet(float divisor, int dividend) {
+        float result = divisor / dividend;
+        if (Float.isNaN(result) || Float.isInfinite(result)) {
+            return 0.0f;
+        }
+        return result;
     }
 
-    public void setNewPayRate(String newPayRate) {
-        this.newPayRate = newPayRate;
+    private void initRate(String changeRateDs,int rate) {
+        if (DateUtil.dateCompare(ds, changeRateDs) < 0) {
+            payAmount *= rate;
+            payInstallAmount *= rate;
+            newPayAmount *= rate;
+        }
     }
 
-    public String getNewPayArpu() {
-        return newPayArpu;
-    }
-
-    public void setNewPayArpu(String newPayArpu) {
-        this.newPayArpu = newPayArpu;
-    }
-
-    public String getNewPayArppu() {
-        return newPayArppu;
-    }
-
-    public void setNewPayArppu(String newPayArppu) {
-        this.newPayArppu = newPayArppu;
-    }
+//    public String getNewPayRate() {
+//        return newPayRate;
+//    }
+//
+//    public void setNewPayRate(String newPayRate) {
+//        this.newPayRate = newPayRate;
+//    }
+//
+//    public String getNewPayArpu() {
+//        return newPayArpu;
+//    }
+//
+//    public void setNewPayArpu(String newPayArpu) {
+//        this.newPayArpu = newPayArpu;
+//    }
+//
+//    public String getNewPayArppu() {
+//        return newPayArppu;
+//    }
+//
+//    public void setNewPayArppu(String newPayArppu) {
+//        this.newPayArppu = newPayArppu;
+//    }
 
     public boolean checkZero() {
         return false;

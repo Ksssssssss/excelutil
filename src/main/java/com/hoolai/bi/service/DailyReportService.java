@@ -2,12 +2,18 @@ package com.hoolai.bi.service;
 
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.ExcelWriter;
+import com.alibaba.excel.annotation.ExcelIgnore;
 import com.alibaba.excel.write.metadata.WriteSheet;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.hoolai.bi.context.ReportEnvConfig;
 import com.hoolai.bi.entiy.ReportType;
 import com.hoolai.bi.entiy.daily.DailyStats;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @description:
@@ -16,10 +22,15 @@ import java.util.List;
  */
 @Service
 public abstract class DailyReportService {
+
+    @Autowired
+    private ReportEnvConfig reportEnvConfig;
+
     public void write(String startDs, String endDs, int gameId, ExcelWriter excelWriter, int i, ReportType type){
         WriteSheet writeSheet;
         List<DailyStats> datas =  produceData(startDs, endDs, gameId);
-        datas.forEach(dailyStats -> dailyStats.init());
+        datas = datas.stream().sorted(Comparator.comparing(DailyStats::getDs).reversed()).collect(Collectors.toList());
+        datas.forEach(dailyStats -> dailyStats.init(reportEnvConfig));
         Class clazz = datas.stream().findFirst().get().getClass();
         writeSheet = EasyExcel.writerSheet(i, type.getName()).head(clazz).build();
         excelWriter.write(datas, writeSheet);

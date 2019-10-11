@@ -3,6 +3,7 @@ package com.hoolai.bi;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.hoolai.bi.context.ReportEnvConfig;
 import com.hoolai.bi.entiy.DateUtil;
 import com.hoolai.bi.entiy.daily.DailyOsStats;
 import com.hoolai.bi.entiy.daily.DailyStats;
@@ -28,6 +29,8 @@ public class BiApplicationTests {
     private DailyOsStatsMapper dailyOsStatsMapper;
     @Autowired
     private RetentionMapper retentionMapper;
+    @Autowired
+    private ReportEnvConfig reportEnvConfig;
 
     @Test
     public void contextLoads() {
@@ -58,6 +61,10 @@ public class BiApplicationTests {
         }
     }
 
+    @Test
+    public void calculate(){
+        System.out.println(reportEnvConfig.getChangeRateDs());
+    }
 
     @Test
     public void date(){

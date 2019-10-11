@@ -14,14 +14,16 @@ import java.util.Date;
 public class DateUtil {
     private static final SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
     private static final int INCREMENT = 1;
+    private static final int DECREASE = -1;
 
-    public static String dateIncr(String date) {
+
+    public static String dateDesc(String date) {
         Date ds;
         Calendar calendar = Calendar.getInstance();
         try {
             ds = df.parse(date);
             calendar.setTime(ds);
-            calendar.add(Calendar.DAY_OF_MONTH,INCREMENT);
+            calendar.add(Calendar.DAY_OF_MONTH,DECREASE);
         } catch (Exception e) {
             e.printStackTrace();
         }

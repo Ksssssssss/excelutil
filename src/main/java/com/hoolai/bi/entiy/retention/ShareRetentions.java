@@ -29,7 +29,10 @@ public class ShareRetentions {
         List<List<ShareRetention>> result = Lists.newArrayList();
         switch (retentionType) {
             case RETENTION:
-                result.add(shareRetentions.get(ds));
+                List<ShareRetention> shareRetentionList = shareRetentions.get(ds);
+                if (!CollectionUtils.isEmpty(shareRetentionList)) {
+                    result.add(shareRetentionList);
+                }
                 break;
             case RETENTION_OS:
                 result = shareOsRetentions(ds);
@@ -40,7 +43,7 @@ public class ShareRetentions {
 
     private List<List<ShareRetention>> shareOsRetentions(String ds) {
         List<ShareRetention> shareRetentionList = shareRetentions.get(ds);
-        if (CollectionUtils.isEmpty(shareRetentionList)){
+        if (CollectionUtils.isEmpty(shareRetentionList)) {
             return new ArrayList<>();
         }
         Map<String, List<ShareRetention>> result = shareRetentionList.stream().collect(Collectors.groupingBy(shareRetention -> ((ShareOsRetention) shareRetention).getOs()));
