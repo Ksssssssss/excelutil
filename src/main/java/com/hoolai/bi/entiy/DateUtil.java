@@ -17,18 +17,19 @@ public class DateUtil {
     private static final int DECREASE = -1;
 
 
-    public static String dateDesc(String date) {
+    public static String dateCalculate(String date,int day) {
         Date ds;
         Calendar calendar = Calendar.getInstance();
         try {
             ds = df.parse(date);
             calendar.setTime(ds);
-            calendar.add(Calendar.DAY_OF_MONTH,DECREASE);
+            calendar.add(Calendar.DAY_OF_MONTH,day);
         } catch (Exception e) {
             e.printStackTrace();
         }
         return df.format(calendar.getTime());
     }
+
 
     public static int dateCompare(String endDate, String startDate) {
         Date startDs;

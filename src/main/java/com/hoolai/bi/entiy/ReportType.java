@@ -2,8 +2,9 @@ package com.hoolai.bi.entiy;
 
 import com.alibaba.excel.ExcelWriter;
 import com.hoolai.bi.context.SpringUtils;
+import com.hoolai.bi.entiy.income.InstallIncomeRate;
+import com.hoolai.bi.service.InstallIncomeService;
 import com.hoolai.bi.service.impl.*;
-import com.hoolai.bi.service.RetentionReportService;
 
 /**
  *
@@ -17,7 +18,7 @@ public enum ReportType {
     ALL("总览") {
         @Override
         public void write(String startDs, String endDs, int gameId, ExcelWriter excelWriter, int i) {
-            SpringUtils.getBean(DailyStatsServiceImpl.class).write(startDs, endDs, gameId, excelWriter, i,this);
+            SpringUtils.getBean(DailyAllStatsServiceImpl.class).write(startDs, endDs, gameId, excelWriter, i,this);
         }
     },
     RETWNTION("留存"){
@@ -44,7 +45,18 @@ public enum ReportType {
             SpringUtils.getBean(DailyCreativeStatsServiceImpl.class).write(startDs, endDs, gameId, excelWriter, i,this);
         }
     },
-//    RETENTION_OS("留存(操作系统)")
+    RETWNTION_CREATIVE("留存(按渠道)"){
+        @Override
+        public void write(String startDs, String endDs, int gameId, ExcelWriter excelWriter, int i) {
+            SpringUtils.getBean(RetentionCreativeServiceImpl.class).writeRetention(startDs, endDs, gameId, excelWriter, i,this);
+        }
+    },
+    INSTALL_INCOME_RATE("注收比"){
+        @Override
+        public void write(String startDs, String endDs, int gameId, ExcelWriter excelWriter, int i) {
+            SpringUtils.getBean(InstallIncomeServiceImpl.class).write(startDs, endDs, gameId, excelWriter, i,this);
+        }
+    },
     ;
 
     private String name;

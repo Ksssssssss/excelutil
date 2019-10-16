@@ -4,6 +4,8 @@ import com.alibaba.excel.annotation.ExcelIgnore;
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.alibaba.excel.annotation.write.style.ColumnWidth;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.hoolai.bi.context.ReportEnvConfig;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  *
@@ -24,6 +26,8 @@ public class GameInfo {
     @TableId
     @ExcelIgnore
     protected int snid;
+    @Autowired
+    protected ReportEnvConfig config;
 
     public int getGameid() {
         return gameid;

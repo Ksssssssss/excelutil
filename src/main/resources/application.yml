@@ -3,9 +3,9 @@ server:
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://10.2.21.67/report?serverTimezone=CTT&useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true
-    username: root
-    password: 123456
+    url: jdbc:mysql://10.2.21.36/report?serverTimezone=CTT&useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true
+    username: report
+    password: hoolai)(*123
 debug: false
 #mapper
 mybatis-plus:

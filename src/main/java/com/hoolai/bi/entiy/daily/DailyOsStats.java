@@ -4,7 +4,6 @@ import com.alibaba.excel.annotation.ExcelProperty;
 import com.baomidou.mybatisplus.annotation.TableId;
 
 /**
- *
  * @description:
  * @author: Ksssss(chenlin @ hoolai.com)
  * @time: 2019-09-29 11:05
@@ -12,9 +11,8 @@ import com.baomidou.mybatisplus.annotation.TableId;
 
 public class DailyOsStats extends DailyStats {
 
-    /** 操作系统 */
     @TableId
-    @ExcelProperty("操作系统")
+    @ExcelProperty(value = "操作系统", index = 1)
     private String os;
 
     public String getOs() {

@@ -2,16 +2,11 @@ package com.hoolai.bi.entiy.daily;
 
 import com.alibaba.excel.annotation.ExcelIgnore;
 import com.alibaba.excel.annotation.ExcelProperty;
+import com.alibaba.excel.annotation.format.NumberFormat;
 import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.hoolai.bi.context.ExtraInfoConvert;
 import com.hoolai.bi.context.ReportEnvConfig;
 import com.hoolai.bi.entiy.DateUtil;
 import com.hoolai.bi.entiy.GameInfo;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import javax.swing.*;
-import java.util.Optional;
 
 /**
  * @description:
@@ -19,13 +14,13 @@ import java.util.Optional;
  * @time: 2019-09-29 11:04
  */
 
-public class DailyStats extends GameInfo {
+public abstract class DailyStats extends GameInfo {
 
-    @ExcelProperty("活跃")
+    @ExcelProperty(value = "活跃" )
     private int dauNum;
     @ExcelProperty("安装")
     private int installNum;
-
+    @NumberFormat("0.00")
     @ExcelProperty("付费金额（元）")
     private float payAmount;
     @TableField(exist = false)
@@ -47,12 +42,14 @@ public class DailyStats extends GameInfo {
     @ExcelProperty("安装付费人数")
     private int payInstallCount;
     @ExcelProperty("安装付金额（元）")
+    @NumberFormat("0.00")
     private float payInstallAmount;
     @ExcelProperty("安装付费次数")
     private int payInstallTimes;
     @ExcelProperty("新付费人数")
     private int newPayCount;
-    @ExcelProperty("新付费金额（元）")
+    @NumberFormat("0.00")
+    @ExcelProperty(value = "新付费金额（元）")
     private float newPayAmount;
     @ExcelProperty("新付费次数")
     private int newPayTimes;
@@ -68,30 +65,17 @@ public class DailyStats extends GameInfo {
     @ExcelProperty("安装arppu(元)")
     private String installArppu;
 
-//
-//    @TableField(exist = false)
-//    @ExcelProperty("新付费率")
-//    private String newPayRate;
-//
-//    @TableField(exist = false)
-//    @ExcelProperty("新付费arpu(元)")
-//    private String newPayArpu;
-//
-//    @TableField(exist = false)
-//    @ExcelProperty("新付费arppu(元)")
-//    private String newPayArppu;
-
-    public void init(ReportEnvConfig reportEnvConfig) {
-        initRate(reportEnvConfig.getChangeRateDs(),reportEnvConfig.getRate());
-        arpu = String.format("%.2f", checkAndGet(payAmount, dauNum));
-        arppu = String.format("%.2f", checkAndGet(payAmount, payCount));
-        payRate = String.format("%.2f", checkAndGet(payCount, dauNum) * 100) + "%";
-        installPayRate = String.format("%.2f", checkAndGet(payInstallCount, installNum) * 100) + "%";
-        installArpu = String.format("%.2f", checkAndGet(payInstallAmount, installNum));
-        installArppu = String.format("%.2f", checkAndGet(payInstallAmount, payInstallCount));
+    public void init() {
+        initRate(config.getChangeRateDs(),config.getRate());
+        arpu = String.format("%.2f", checkDivide(payAmount, dauNum));
+        arppu = String.format("%.2f", checkDivide(payAmount, payCount));
+        payRate = String.format("%.2f", checkDivide(payCount, dauNum) * 100) + "%";
+        installPayRate = String.format("%.2f", checkDivide(payInstallCount, installNum) * 100) + "%";
+        installArpu = String.format("%.2f", checkDivide(payInstallAmount, installNum));
+        installArppu = String.format("%.2f", checkDivide(payInstallAmount, payInstallCount));
     }
 
-    private float checkAndGet(float divisor, int dividend) {
+    private float checkDivide(float divisor, int dividend) {
         float result = divisor / dividend;
         if (Float.isNaN(result) || Float.isInfinite(result)) {
             return 0.0f;
@@ -106,30 +90,6 @@ public class DailyStats extends GameInfo {
             newPayAmount *= rate;
         }
     }
-
-//    public String getNewPayRate() {
-//        return newPayRate;
-//    }
-//
-//    public void setNewPayRate(String newPayRate) {
-//        this.newPayRate = newPayRate;
-//    }
-//
-//    public String getNewPayArpu() {
-//        return newPayArpu;
-//    }
-//
-//    public void setNewPayArpu(String newPayArpu) {
-//        this.newPayArpu = newPayArpu;
-//    }
-//
-//    public String getNewPayArppu() {
-//        return newPayArppu;
-//    }
-//
-//    public void setNewPayArppu(String newPayArppu) {
-//        this.newPayArppu = newPayArppu;
-//    }
 
     public boolean checkZero() {
         return false;

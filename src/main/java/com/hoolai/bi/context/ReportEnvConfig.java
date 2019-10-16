@@ -17,6 +17,8 @@ public class ReportEnvConfig {
     private int rate;
     /** 最大的留存天数*/
     private int maxRetentionDay;
+    /** 最大注收比*/
+    private int maxInstallIncomeDay;
 
     public String getChangeRateDs() {
         return changeRateDs;
@@ -40,5 +42,13 @@ public class ReportEnvConfig {
 
     public void setMaxRetentionDay(int maxRetentionDay) {
         this.maxRetentionDay = maxRetentionDay;
+    }
+
+    public int getMaxInstallIncomeDay() {
+        return maxInstallIncomeDay;
+    }
+
+    public void setMaxInstallIncomeDay(int maxInstallIncomeDay) {
+        this.maxInstallIncomeDay = maxInstallIncomeDay;
     }
 }

@@ -10,6 +10,7 @@ import com.alibaba.excel.annotation.ExcelProperty;
  */
 
 public class DailyExtraInfo {
+
     @ExcelProperty("用户平均收益")
     private float arpu;
     @ExcelProperty("付费用户平均收益")

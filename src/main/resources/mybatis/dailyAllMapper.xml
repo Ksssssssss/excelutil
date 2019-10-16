@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hoolai.bi.mapper.DailyAllStatsMapper">
+
+    <select id="queryAllList" resultType="com.hoolai.bi.entiy.daily.DailyAllStats">
+SELECT
+	gameid,
+	t_2.ds,
+	snid,
+	dau_num,
+	install_num,
+	pay_count,
+	pay_amount,
+	pay_times,
+	pay_install_count,
+	pay_install_times,
+	pay_install_amount,
+	new_pay_count,
+	new_pay_times,
+	new_pay_amount,
+	ROUND(install_ios_num/install_num,4) install_ios_rate,
+	ROUND(install_android_num/install_num,4) install_android_rate,
+	ROUND(install_unknown_num/install_num,4) install_unknown_rate,
+	ROUND(dau_ios_num/dau_num,4) dau_ios_rate,
+	ROUND(dau_android_num/dau_num,4) dau_android_rate,
+	ROUND(dau_ios_num/dau_num,4) dau_ios_rate,
+	ROUND(dau_unknown_num/dau_num,4) dau_unknown_rate
+FROM
+	(
+	SELECT
+	t_1.ds,
+	MAX( ( CASE t_1.os WHEN 'ios' THEN t_1.install_num END ) ) install_ios_num,
+	MAX( ( CASE t_1.os WHEN 'android' THEN t_1.install_num END ) ) install_android_num,
+	MAX( ( CASE t_1.os WHEN 'unknown' THEN t_1.install_num END ) ) install_unknown_num,
+	MAX( ( CASE t_1.os WHEN 'ios' THEN t_1.dau_num END ) ) dau_ios_num,
+	MAX( ( CASE t_1.os WHEN 'android' THEN t_1.dau_num END ) ) dau_android_num,
+	MAX( ( CASE t_1.os WHEN 'unknown' THEN t_1.dau_num END ) ) dau_unknown_num
+	FROM
+	( SELECT IF ( os = '0', 'unknown', os ) os, ds, install_num, dau_num FROM daily_os_stats WHERE ds>=#{startDs}
+	AND ds&lt;=#{endDs} AND gameid = #{gameId}) t_1
+	GROUP BY
+	t_1.ds
+	) t_2
+	LEFT JOIN (
+	SELECT
+	gameid,
+	ds,
+	snid,
+	dau_num,
+	install_num,
+	pay_count,
+	pay_amount,
+	pay_times,
+	pay_install_count,
+	pay_install_times,
+	pay_install_amount,
+	new_pay_count,
+	new_pay_times,
+	new_pay_amount
+	FROM
+	daily_stats
+	WHERE
+	gameid = #{gameId}
+	AND ds>=#{startDs}
+	AND ds&lt;=#{endDs}
+	) t_3 ON t_2.ds = t_3.ds
+	</select>
+</mapper>

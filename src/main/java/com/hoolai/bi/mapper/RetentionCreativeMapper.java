@@ -1,5 +1,6 @@
 package com.hoolai.bi.mapper;
 
+import com.hoolai.bi.entiy.retention.ShareCreativeRetention;
 import com.hoolai.bi.entiy.retention.ShareOsRetention;
 import org.apache.ibatis.annotations.Param;
 
@@ -13,6 +14,6 @@ import java.util.List;
  * 
  */
 
-public interface RetentionOsMapper {
-    List<ShareOsRetention> queryRetentionOs(@Param("gameId") int gameid, @Param("startDs") String startDs, @Param("endDs") String endDs);
+public interface RetentionCreativeMapper {
+    List<ShareCreativeRetention> queryRetentionCreative(@Param("gameId") int gameid, @Param("startDs") String startDs, @Param("endDs") String endDs);
 }

@@ -8,6 +8,7 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.hoolai.bi.context.ReportEnvConfig;
 import com.hoolai.bi.entiy.ReportType;
 import com.hoolai.bi.entiy.daily.DailyStats;
+import com.hoolai.bi.entiy.excel.ExcelStyleStrategy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,15 +25,15 @@ import java.util.stream.Collectors;
 public abstract class DailyReportService {
 
     @Autowired
-    private ReportEnvConfig reportEnvConfig;
+    private ExcelStyleStrategy excelStyleStrategy;
 
     public void write(String startDs, String endDs, int gameId, ExcelWriter excelWriter, int i, ReportType type){
         WriteSheet writeSheet;
         List<DailyStats> datas =  produceData(startDs, endDs, gameId);
         datas = datas.stream().sorted(Comparator.comparing(DailyStats::getDs).reversed()).collect(Collectors.toList());
-        datas.forEach(dailyStats -> dailyStats.init(reportEnvConfig));
+        datas.forEach(dailyStats -> dailyStats.init());
         Class clazz = datas.stream().findFirst().get().getClass();
-        writeSheet = EasyExcel.writerSheet(i, type.getName()).head(clazz).build();
+        writeSheet = EasyExcel.writerSheet(i, type.getName()).registerWriteHandler(excelStyleStrategy.customCellStyle()).head(clazz).build();
         excelWriter.write(datas, writeSheet);
     };
 

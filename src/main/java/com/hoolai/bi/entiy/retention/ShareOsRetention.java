@@ -10,7 +10,7 @@ import com.alibaba.excel.annotation.ExcelProperty;
  * 
  */
  
-public class ShareOsRetention extends ShareRetention{
+public class ShareOsRetention extends ShareRetention {
     @ExcelProperty("操作系统")
     private String os;
 

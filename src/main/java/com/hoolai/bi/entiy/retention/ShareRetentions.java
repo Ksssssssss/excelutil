@@ -1,7 +1,8 @@
 package com.hoolai.bi.entiy.retention;
 
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.hoolai.bi.entiy.ReportType;
+import com.hoolai.bi.entiy.ExtraType;
 import org.springframework.util.CollectionUtils;
 
 import java.util.*;
@@ -15,39 +16,34 @@ import java.util.stream.Collectors;
 
 public class ShareRetentions {
     private Map<String, List<ShareRetention>> shareRetentions;
-    private RetentionType retentionType;
+    private ExtraType extraType;
 
     public ShareRetentions() {
     }
 
-    public ShareRetentions(Map<String, List<ShareRetention>> shareRetentions, RetentionType retentionType) {
+    public ShareRetentions(Map<String, List<ShareRetention>> shareRetentions, ExtraType extraType) {
         this.shareRetentions = shareRetentions;
-        this.retentionType = retentionType;
+        this.extraType = extraType;
     }
 
     public List<List<ShareRetention>> groupAndGetKey(String ds) {
-        List<List<ShareRetention>> result = Lists.newArrayList();
-        switch (retentionType) {
-            case RETENTION:
-                List<ShareRetention> shareRetentionList = shareRetentions.get(ds);
-                if (!CollectionUtils.isEmpty(shareRetentionList)) {
-                    result.add(shareRetentionList);
-                }
-                break;
-            case RETENTION_OS:
-                result = shareOsRetentions(ds);
-                break;
-        }
-        return result;
-    }
-
-    private List<List<ShareRetention>> shareOsRetentions(String ds) {
+        Map<String, List<ShareRetention>> result = Maps.newHashMap();
         List<ShareRetention> shareRetentionList = shareRetentions.get(ds);
         if (CollectionUtils.isEmpty(shareRetentionList)) {
             return new ArrayList<>();
         }
-        Map<String, List<ShareRetention>> result = shareRetentionList.stream().collect(Collectors.groupingBy(shareRetention -> ((ShareOsRetention) shareRetention).getOs()));
-        return new ArrayList<List<ShareRetention>>(result.values());
+        switch (extraType) {
+            case ALL:
+                result.put(ReportType.RETWNTION.getName(), shareRetentionList);
+                break;
+            case OS:
+                result = shareRetentionList.stream().collect(Collectors.groupingBy(shareRetention -> ((ShareOsRetention) shareRetention).getOs()));
+                break;
+            case CREATIVE:
+                result = shareRetentionList.stream().collect(Collectors.groupingBy(shareRetention -> ((ShareCreativeRetention) shareRetention).getCreative()));
+                break;
+        }
+        return new ArrayList<>(result.values());
     }
 
     public Map<String, List<ShareRetention>> getShareRetentions() {
@@ -58,12 +54,12 @@ public class ShareRetentions {
         this.shareRetentions = shareRetentions;
     }
 
-    public RetentionType getRetentionType() {
-        return retentionType;
+    public ExtraType getExtraType() {
+        return extraType;
     }
 
-    public void setRetentionType(RetentionType retentionType) {
-        this.retentionType = retentionType;
+    public void setExtraType(ExtraType extraType) {
+        this.extraType = extraType;
     }
 
 }

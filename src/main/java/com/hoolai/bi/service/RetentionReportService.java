@@ -8,21 +8,17 @@ import com.google.common.collect.Lists;
 import com.hoolai.bi.context.ReportEnvConfig;
 import com.hoolai.bi.entiy.DateUtil;
 import com.hoolai.bi.entiy.ReportType;
-import com.hoolai.bi.entiy.retention.RetentionType;
-import com.hoolai.bi.entiy.retention.ShareOsRetention;
+import com.hoolai.bi.entiy.ExtraType;
+import com.hoolai.bi.entiy.excel.ExcelStyleStrategy;
 import com.hoolai.bi.entiy.retention.ShareRetention;
 import com.hoolai.bi.entiy.retention.ShareRetentions;
-import com.hoolai.bi.mapper.RetentionMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  * @description:
@@ -34,6 +30,8 @@ public abstract class RetentionReportService {
 
     @Autowired
     private ReportEnvConfig config;
+    @Autowired
+    private ExcelStyleStrategy excelStyleStrategy;
     DecimalFormat df = new DecimalFormat("0.00%");
 
     public void writeRetention(String startDs, String endDs, int gameId, ExcelWriter excelWriter, int i, ReportType type) {
@@ -42,8 +40,8 @@ public abstract class RetentionReportService {
 
         writeSheet = EasyExcel.writerSheet(i, type.getName()).needHead(Boolean.FALSE).build();
         List<List<Object>> rows = rows(startDs, endDs, shareRetentions);
-        List<List<String>> headList = headLists(startDs, endDs, shareRetentions.getRetentionType());
-        WriteTable table = EasyExcel.writerTable(0).needHead(true).build();
+        List<List<String>> headList = headLists(startDs, endDs, shareRetentions.getExtraType());
+        WriteTable table = EasyExcel.writerTable(0).registerWriteHandler(excelStyleStrategy.customCellStyle()).needHead(true).build();
         table.setHead(headList);
         excelWriter.write(rows, writeSheet, table);
     }
@@ -66,7 +64,7 @@ public abstract class RetentionReportService {
         List<List<Object>> rows = new ArrayList<>();
         int intervalDay = 0;
         int suitDay = chooseSuitDayNum(DateUtil.dateCompare(endDs, startDs));
-        for (String ds = endDs; DateUtil.dateCompare(ds, startDs) >= 0; ds = DateUtil.dateDesc(ds)) {
+        for (String ds = endDs; DateUtil.dateCompare(ds, startDs) >= 0; ds = DateUtil.dateCalculate(ds,-1)) {
             List<List<ShareRetention>> shareRetentionLists = shareRetentions.groupAndGetKey(ds);
             if (CollectionUtils.isEmpty(shareRetentionLists)) {
                 continue;
@@ -77,7 +75,7 @@ public abstract class RetentionReportService {
             if (intervalDay <= 0) return rows;
 
             for (List<ShareRetention> shareRetentionList : shareRetentionLists) {
-                List<Object> row = fullRow(intervalDay, suitDay, ds, shareRetentionList, shareRetentions.getRetentionType());
+                List<Object> row = fullRow(intervalDay, suitDay, ds, shareRetentionList, shareRetentions.getExtraType());
                 rows.add(new ArrayList<>(row));
             }
 
@@ -93,15 +91,13 @@ public abstract class RetentionReportService {
      * @return
      * @description 动态填充row
      */
-    private List<Object> fullRow(int intervalDay, int suitDay, String ds, List<ShareRetention> shareRetentions, RetentionType type) {
+    private List<Object>  fullRow(int intervalDay, int suitDay, String ds, List<ShareRetention> shareRetentions, ExtraType type) {
         List<Object> row = Lists.newLinkedList();
-        for (int i = 0; i <= suitDay + intervalDay + type.getNeedRowLength(); i++) {
+        ShareRetention retention = shareRetentions.stream().findAny().get();
+        for (int i = 0; i < suitDay + intervalDay + type.getNeedRowLength(); i++) {
             if (i == 0) {
-
                 row.add(ds);
-                if (type == RetentionType.RETENTION_OS) {
-                    row.add(((ShareOsRetention) shareRetentions.stream().findAny().get()).getOs());
-                }
+                type.addExtraCell(row,retention);
                 row.add(shareRetentions.stream().findAny().get().getInstallNum());
                 continue;
             }
@@ -129,7 +125,7 @@ public abstract class RetentionReportService {
      * @return
      * @description: 动态添加 head --> 所有head
      */
-    private List<List<String>> headLists(String startDs, String endDs, RetentionType type) {
+    private List<List<String>> headLists(String startDs, String endDs, ExtraType type) {
         List<List<String>> headList = new ArrayList<>();
         int suitDay = chooseSuitDayNum(DateUtil.dateCompare(endDs, startDs));
 
@@ -138,14 +134,13 @@ public abstract class RetentionReportService {
                 for (String head : type.getNeedExcelHead()) {
                     headList.add(Collections.singletonList(head));
                 }
-
                 continue;
             }
-            headList.add(Collections.singletonList(i + "日留存"));
+            headList.add(Collections.singletonList(i + "日"));
         }
 
         for (int i = 1; i <= suitDay; i++) {
-            headList.add(Collections.singletonList(i + "日留存人数"));
+            headList.add(Collections.singletonList(i + "日人数"));
         }
         return headList;
     }

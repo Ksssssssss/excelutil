@@ -4,11 +4,13 @@ import com.alibaba.excel.ExcelWriter;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.hoolai.bi.entiy.ReportType;
 import com.hoolai.bi.entiy.daily.DailyStats;
+import com.hoolai.bi.mapper.DailyAllStatsMapper;
 import com.hoolai.bi.mapper.DailyStatsMapper;
 import com.hoolai.bi.service.DailyReportService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -19,12 +21,12 @@ import java.util.List;
  */
 
 @Service
-public class DailyStatsServiceImpl extends DailyReportService {
+public class DailyAllStatsServiceImpl extends DailyReportService {
     @Autowired
-    private DailyStatsMapper dailyStatsMapper;
+    private DailyAllStatsMapper dailyAllStatsMapper;
 
     @Override
     public List<DailyStats> produceData(String startDs, String endDs, int gameId) {
-        return dailyStatsMapper.selectList(new LambdaQueryWrapper<DailyStats>().ge(DailyStats::getDs, startDs).le(DailyStats::getDs, endDs).eq(DailyStats::getGameid, gameId));
+        return new ArrayList<DailyStats>(dailyAllStatsMapper.queryAllList(gameId,startDs,endDs));
     }
 }

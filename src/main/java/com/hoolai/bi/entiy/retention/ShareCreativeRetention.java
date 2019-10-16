@@ -1,17 +1,16 @@
-package com.hoolai.bi.entiy.daily;
+package com.hoolai.bi.entiy.retention;
 
 import com.alibaba.excel.annotation.ExcelProperty;
-import com.baomidou.mybatisplus.annotation.TableId;
 
 /**
  * @description:
  * @author: Ksssss(chenlin @ hoolai.com)
- * @time: 2019-09-29 19:28
+ * @time: 2019-10-12 15:30
  */
 
-public class DailyCreativeStats extends DailyStats {
-    @TableId
-    @ExcelProperty(value = "渠道", index = 1)
+public class ShareCreativeRetention extends ShareRetention {
+
+    @ExcelProperty("渠道")
     private String creative;
 
     public String getCreative() {
@@ -21,5 +20,4 @@ public class DailyCreativeStats extends DailyStats {
     public void setCreative(String creative) {
         this.creative = creative;
     }
-
 }
