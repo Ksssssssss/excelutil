@@ -7,12 +7,15 @@ import com.hoolai.bi.entiy.ReportType;
 import com.hoolai.bi.entiy.daily.DailyCreativeStats;
 import com.hoolai.bi.entiy.daily.DailyOsStats;
 import com.hoolai.bi.entiy.daily.DailyStats;
+import com.hoolai.bi.entiy.daily.DailyStatsDatas;
 import com.hoolai.bi.mapper.DailyCreativeStatsMapper;
 import com.hoolai.bi.mapper.DailyStatsMapper;
 import com.hoolai.bi.service.DailyReportService;
+import com.hoolai.bi.service.ReportService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -21,16 +24,17 @@ import java.util.List;
  * @time: 2019-10-10 16:22
  */
 @Service
-public class DailyCreativeStatsServiceImpl extends DailyReportService {
+public class DailyCreativeStatsServiceImpl implements ReportService {
     @Autowired
     private DailyCreativeStatsMapper dailyCreativeStatsMapper;
 
     @Override
-    public List<DailyStats> produceData(String startDs, String endDs, int gameId) {
+    public DailyStatsDatas produceDatas(String startDs, String endDs, int gameId) {
+        DailyStatsDatas dailyStatsDatas;
         List<DailyCreativeStats> dailyCreativeStatsList = dailyCreativeStatsMapper.queryCreativeList(gameId,startDs,endDs);
+        List<DailyStats> dailyStatsList = new ArrayList<DailyStats>(dailyCreativeStatsList);
+        dailyStatsDatas = new DailyStatsDatas(dailyStatsList,ReportType.CREATIVE);
 
-        List<DailyStats> dailyOsStatsList = Lists.newArrayListWithCapacity(dailyCreativeStatsList.size());
-        dailyCreativeStatsList.forEach(dailyOsStats -> dailyOsStatsList.add(dailyOsStats));
-        return dailyOsStatsList;
+        return dailyStatsDatas;
     }
 }

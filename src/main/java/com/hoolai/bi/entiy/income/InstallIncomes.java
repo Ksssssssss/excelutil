@@ -2,10 +2,9 @@ package com.hoolai.bi.entiy.income;
 
 import com.google.common.collect.Maps;
 import com.hoolai.bi.context.ReportEnvConfig;
-import com.hoolai.bi.entiy.DateUtil;
-import com.hoolai.bi.entiy.ExtraType;
-import com.hoolai.bi.entiy.ReportType;
+import com.hoolai.bi.entiy.*;
 ;
+import com.hoolai.bi.entiy.retention.ShareRetention;
 import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
@@ -20,16 +19,15 @@ import java.util.stream.Collectors;
  * @time: 2019-10-10 17:17
  */
 
-public class InstallIncomes {
+public class InstallIncomes implements ExcelDatas {
     private Map<String, List<InstallIncomeRate>> installIncomeRates;
-    private ExtraType type;
+    private ReportType type;
+    private ExtraType extraType;
 
-    public InstallIncomes() {
-    }
-
-    public InstallIncomes(Map<String, List<InstallIncomeRate>> installIncomeRates, ExtraType type) {
+    public InstallIncomes(Map<String, List<InstallIncomeRate>> installIncomeRates, ReportType type, ExtraType extraType) {
         this.installIncomeRates = installIncomeRates;
         this.type = type;
+        this.extraType = extraType;
     }
 
     public List<List<InstallIncomeRate>> groupAndGetKey(String ds) {
@@ -38,7 +36,7 @@ public class InstallIncomes {
         if (CollectionUtils.isEmpty(installIcomeRateList)) {
             return new ArrayList<>();
         }
-        switch (type) {
+        switch (extraType) {
             case INSTALL_INCOME_ALL:
                 result.put(ReportType.INSTALL_INCOME_RATE.getName(), installIcomeRateList);
                 break;
@@ -75,19 +73,19 @@ public class InstallIncomes {
 
     public void fullEmptyRow(List<Object> row) {
         List<Integer> indexs = new ArrayList<>();
-        for (int i = type.getNeedRowLength() + 1; i < row.size(); i++) {
+        for (int i = extraType.getNeedRowLength() + 1; i < row.size(); i++) {
             if (!row.get(i).equals("0.00")) {
                 indexs.add(i);
             }
         }
-        if (indexs.size() <= 1){
+        if (indexs.size() <= 1) {
             return;
         }
         float incomeRate = 0f;
         for (int i = 1; i < indexs.size(); i++) {
-            for (int j = indexs.get(i-1); j < row.size(); j++) {
-                if (j < indexs.get(i)){
-                    row.set(j,row.get(indexs.get(i-1)));
+            for (int j = indexs.get(i - 1); j < row.size(); j++) {
+                if (j < indexs.get(i)) {
+                    row.set(j, row.get(indexs.get(i - 1)));
                 }
             }
         }
@@ -101,11 +99,19 @@ public class InstallIncomes {
         this.installIncomeRates = installIncomeRates;
     }
 
-    public ExtraType getType() {
+    public ReportType getType() {
         return type;
     }
 
-    public void setType(ExtraType type) {
+    public void setType(ReportType type) {
         this.type = type;
+    }
+
+    public ExtraType getExtraType() {
+        return extraType;
+    }
+
+    public void setExtraType(ExtraType extraType) {
+        this.extraType = extraType;
     }
 }

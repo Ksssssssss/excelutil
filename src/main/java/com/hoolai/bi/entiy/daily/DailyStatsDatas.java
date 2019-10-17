@@ -1,5 +1,7 @@
 package com.hoolai.bi.entiy.daily;
 
+import com.hoolai.bi.context.ReportEnvConfig;
+import com.hoolai.bi.entiy.ExcelDatas;
 import com.hoolai.bi.entiy.ExtraType;
 import com.hoolai.bi.entiy.ReportType;
 
@@ -13,15 +15,21 @@ import java.util.stream.Collectors;
  * @time: 2019-10-16 10:48
  */
 
-public class DailyStatsDatas {
+public class DailyStatsDatas implements ExcelDatas {
     private ReportType type;
     private List<DailyStats> dailyStatsList;
 
-    public List<DailyStats> initAndGetDailyStatsDatas(){
-        dailyStatsList.stream().sorted(Comparator.comparing(DailyStats::getDs).reversed()).collect(Collectors.toList());
-        dailyStatsList.forEach(dailyStats -> dailyStats.init());
+    public DailyStatsDatas( List<DailyStats> dailyStatsList,ReportType type) {
+        this.type = type;
+        this.dailyStatsList = dailyStatsList;
+    }
+
+    public List<DailyStats> initAndGetDailyStatsDatas(ReportEnvConfig config){
+        dailyStatsList = dailyStatsList.stream().sorted(Comparator.comparing(DailyStats::getDs).reversed()).collect(Collectors.toList());
+        dailyStatsList.forEach(dailyStats -> dailyStats.init(config));
         return dailyStatsList;
     }
+
     public ReportType getType() {
         return type;
     }

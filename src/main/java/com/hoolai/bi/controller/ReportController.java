@@ -2,7 +2,8 @@ package com.hoolai.bi.controller;
 
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.ExcelWriter;
-import com.hoolai.bi.entiy.ReportType;
+import com.hoolai.bi.entiy.QueryInfo;
+import com.hoolai.bi.entiy.excel.Writer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -10,6 +11,8 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.URLEncoder;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * @description:
@@ -18,6 +21,21 @@ import java.net.URLEncoder;
  */
 @RestController
 public class ReportController {
+    @Autowired
+    private Writer dailyWriter;
+    @Autowired
+    private Writer dailyOsWriter;
+    @Autowired
+    private Writer dailyCreativeWriter;
+    @Autowired
+    private Writer retentionWriter;
+    @Autowired
+    private Writer retentionOsWriter;
+    @Autowired
+    private Writer retentionCreativeWriter;
+    @Autowired
+    private Writer installIncomeWriter;
+
 
     @RequestMapping("/api/report/generateReport")
     public void generateReport(HttpServletResponse response, String startDs, String endDs, int gameId) throws IOException {
@@ -39,11 +57,10 @@ public class ReportController {
      */
     public void repeatedWrite(HttpServletResponse response, String startDs, String endDs, int gameId) throws IOException {
         ExcelWriter excelWriter = EasyExcel.write(response.getOutputStream()).build();
-
-        int i = 0;
-        for (ReportType sheetName : ReportType.values()) {
-            sheetName.write(startDs,endDs,gameId,excelWriter,i);
-            i++;
+        QueryInfo info = new QueryInfo(startDs,endDs,gameId);
+        List<Writer> writers = Arrays.asList(dailyWriter,retentionWriter,dailyOsWriter,dailyCreativeWriter,retentionOsWriter,retentionCreativeWriter,installIncomeWriter);
+        for (int i = 0; i < writers.size(); i++) {
+            writers.get(i).write(i,excelWriter,info);
         }
         excelWriter.finish();
     }

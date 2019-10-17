@@ -1,11 +1,13 @@
 package com.hoolai.bi.service.impl;
 
+import com.hoolai.bi.entiy.ExcelDatas;
 import com.hoolai.bi.entiy.ExtraType;
+import com.hoolai.bi.entiy.ReportType;
+import com.hoolai.bi.entiy.retention.RetentionDatas;
 import com.hoolai.bi.entiy.retention.ShareOsRetention;
 import com.hoolai.bi.entiy.retention.ShareRetention;
-import com.hoolai.bi.entiy.retention.ShareRetentions;
 import com.hoolai.bi.mapper.RetentionOsMapper;
-import com.hoolai.bi.service.RetentionReportService;
+import com.hoolai.bi.service.ReportService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,14 +21,15 @@ import java.util.stream.Collectors;
  * @time: 2019-10-10 19:54
  */
 @Service
-public class RetentionOsServiceImpl extends RetentionReportService {
+public class RetentionOsServiceImpl implements ReportService {
     @Autowired
     private RetentionOsMapper retentionOsMapper;
 
     @Override
-    protected ShareRetentions produceRetention(String startDs, String endDs, int gameId) {
+    public ExcelDatas produceDatas(String startDs, String endDs, int gameId) {
         List<ShareOsRetention> retentionResultTypes = retentionOsMapper.queryRetentionOs(gameId, startDs, endDs);
         Map<String, List<ShareRetention>> shareRetentionMap = retentionResultTypes.stream().collect(Collectors.groupingBy(retention -> retention.getDs()));
-        return new ShareRetentions(shareRetentionMap, ExtraType.OS);
+        RetentionDatas retentionDatas = new RetentionDatas(shareRetentionMap, ReportType.RETWNTION_OS,ExtraType.OS);
+        return retentionDatas;
     }
 }

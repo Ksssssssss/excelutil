@@ -24,7 +24,10 @@ SELECT
 	ROUND(dau_ios_num/dau_num,4) dau_ios_rate,
 	ROUND(dau_android_num/dau_num,4) dau_android_rate,
 	ROUND(dau_ios_num/dau_num,4) dau_ios_rate,
-	ROUND(dau_unknown_num/dau_num,4) dau_unknown_rate
+	ROUND(dau_unknown_num/dau_num,4) dau_unknown_rate,
+   	exchange_times as exchange_my_times,
+    exchange_count as exchange_my_nums,
+    exchange_amount as exchange_my_amount
 FROM
 	(
 	SELECT
@@ -64,5 +67,18 @@ FROM
 	AND ds>=#{startDs}
 	AND ds&lt;=#{endDs}
 	) t_3 ON t_2.ds = t_3.ds
+    LEFT JOIN (
+	SELECT
+	ds,
+	exchange_times,
+    exchange_count,
+    exchange_amount
+	FROM
+	economy
+	WHERE
+	gameid = #{gameId}
+	AND ds>=#{startDs}
+	AND ds&lt;=#{endDs}
+	) t_4 ON t_2.ds = t_4.ds
 	</select>
 </mapper>

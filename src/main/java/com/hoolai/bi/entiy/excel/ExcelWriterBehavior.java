@@ -7,12 +7,9 @@ import com.hoolai.bi.entiy.QueryInfo;
 /**
  * @description:
  * @author: Ksssss(chenlin @ hoolai.com)
- * @time: 2019-10-16 10:10
+ * @time: 2019-10-15 21:30
  */
 
-public abstract class Writer {
-
-    public abstract void write(int index, ExcelWriter excelWriter, QueryInfo info);
-
-    public abstract ExcelDatas produceDatas(QueryInfo info);
+public interface ExcelWriterBehavior {
+    public void write(int index, ExcelDatas reportDatas, ExcelWriter excelWriter, ExcelStyleStrategy excelStyleStrategy, QueryInfo info);
 }

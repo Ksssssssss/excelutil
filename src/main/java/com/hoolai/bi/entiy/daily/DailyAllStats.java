@@ -11,8 +11,6 @@ import com.hoolai.bi.context.ReportEnvConfig;
 
 public class DailyAllStats extends DailyStats {
 
-//    @ExcelProperty(value = {"活跃", "总活跃"}, index = 1)
-//    private int dauNum;
     @ExcelProperty(value = {"活跃", "android"}, index = 2)
     private String dauAndroidRate;
     @ExcelProperty(value = {"活跃", "ios"}, index = 3)
@@ -20,8 +18,6 @@ public class DailyAllStats extends DailyStats {
     @ExcelProperty(value = {"活跃", "unknown"}, index = 4)
     private String dauUnknownRate;
 
-//    @ExcelProperty(value = {"安装", "总安装"}, index = 5)
-//    private int installNum;
     @ExcelProperty(value = {"安装", "android"}, index = 6)
     private String installAndroidRate;
     @ExcelProperty(value = {"安装", "ios"}, index = 7)
@@ -29,9 +25,16 @@ public class DailyAllStats extends DailyStats {
     @ExcelProperty(value = {"安装", "unknown"}, index = 8)
     private String installUnknownRate;
 
+    @ExcelProperty(value = "萌币兑换次数",index = 9)
+    private int exchangeMyTimes;
+    @ExcelProperty(value = "萌币兑换人数",index = 10)
+    private int exchangeMyNums;
+    @ExcelProperty(value = "萌币兑换金额",index = 11)
+    private String exchangeMyAmount;
+
     @Override
-    public void init(ReportEnvConfig reportEnvConfig) {
-        super.init(reportEnvConfig);
+    public void init(ReportEnvConfig config) {
+        super.init(config);
         dauAndroidRate = changeRate(dauAndroidRate);
         dauIosRate = changeRate(dauIosRate);
         dauUnknownRate = changeRate(dauUnknownRate);
@@ -93,4 +96,27 @@ public class DailyAllStats extends DailyStats {
         this.installUnknownRate = installUnknownRate;
     }
 
+    public int getExchangeMyTimes() {
+        return exchangeMyTimes;
+    }
+
+    public void setExchangeMyTimes(int exchangeMyTimes) {
+        this.exchangeMyTimes = exchangeMyTimes;
+    }
+
+    public int getExchangeMyNums() {
+        return exchangeMyNums;
+    }
+
+    public void setExchangeMyNums(int exchangeMyNums) {
+        this.exchangeMyNums = exchangeMyNums;
+    }
+
+    public String getExchangeMyAmount() {
+        return exchangeMyAmount;
+    }
+
+    public void setExchangeMyAmount(String exchangeMyAmount) {
+        this.exchangeMyAmount = exchangeMyAmount;
+    }
 }

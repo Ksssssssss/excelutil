@@ -15,10 +15,9 @@ import com.hoolai.bi.entiy.GameInfo;
  */
 
 public abstract class DailyStats extends GameInfo {
-
-    @ExcelProperty(value = "活跃" )
+    @ExcelProperty(value = "活跃")
     private int dauNum;
-    @ExcelProperty("安装")
+    @ExcelProperty(value = "安装")
     private int installNum;
     @NumberFormat("0.00")
     @ExcelProperty("付费金额（元）")
@@ -65,7 +64,7 @@ public abstract class DailyStats extends GameInfo {
     @ExcelProperty("安装arppu(元)")
     private String installArppu;
 
-    public void init() {
+    public void init(ReportEnvConfig config) {
         initRate(config.getChangeRateDs(),config.getRate());
         arpu = String.format("%.2f", checkDivide(payAmount, dauNum));
         arppu = String.format("%.2f", checkDivide(payAmount, payCount));

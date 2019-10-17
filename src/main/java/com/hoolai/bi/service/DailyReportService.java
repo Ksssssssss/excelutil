@@ -26,12 +26,14 @@ public abstract class DailyReportService {
 
     @Autowired
     private ExcelStyleStrategy excelStyleStrategy;
+    @Autowired
+    private ReportEnvConfig config;
 
     public void write(String startDs, String endDs, int gameId, ExcelWriter excelWriter, int i, ReportType type){
         WriteSheet writeSheet;
         List<DailyStats> datas =  produceData(startDs, endDs, gameId);
         datas = datas.stream().sorted(Comparator.comparing(DailyStats::getDs).reversed()).collect(Collectors.toList());
-        datas.forEach(dailyStats -> dailyStats.init());
+        datas.forEach(dailyStats -> dailyStats.init(config));
         Class clazz = datas.stream().findFirst().get().getClass();
         writeSheet = EasyExcel.writerSheet(i, type.getName()).registerWriteHandler(excelStyleStrategy.customCellStyle()).head(clazz).build();
         excelWriter.write(datas, writeSheet);

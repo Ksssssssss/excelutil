@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
  * @author: Ksssss(chenlin @ hoolai.com)
  * @time: 2019-10-15 19:41
  */
+@Component
 public class ExcelStyleStrategy {
     private WriteCellStyle headStyle = new WriteCellStyle();
     private WriteCellStyle contentStyle = new WriteCellStyle();
@@ -34,8 +35,6 @@ public class ExcelStyleStrategy {
     }
 
     private void cellStyle(WriteCellStyle cellStyle) {
-
-
         cellStyle.setBorderBottom(BorderStyle.THIN);
         cellStyle.setBorderLeft(BorderStyle.THIN);
         cellStyle.setBorderRight(BorderStyle.THIN);

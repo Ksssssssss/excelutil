@@ -3,9 +3,11 @@ package com.hoolai.bi.entiy;
 import com.alibaba.excel.annotation.ExcelIgnore;
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.alibaba.excel.annotation.write.style.ColumnWidth;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.hoolai.bi.context.ReportEnvConfig;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 /**
  *
@@ -14,7 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  *@time: 2019-09-30 11:49
  * 
  */
- 
+
 public class GameInfo {
     @TableId
     @ExcelIgnore
@@ -26,8 +28,6 @@ public class GameInfo {
     @TableId
     @ExcelIgnore
     protected int snid;
-    @Autowired
-    protected ReportEnvConfig config;
 
     public int getGameid() {
         return gameid;
@@ -52,4 +52,5 @@ public class GameInfo {
     public void setSnid(int snid) {
         this.snid = snid;
     }
+
 }

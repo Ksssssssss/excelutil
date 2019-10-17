@@ -1,8 +1,10 @@
 package com.hoolai.bi.entiy.retention;
 
 import com.google.common.collect.Maps;
+import com.hoolai.bi.entiy.ExcelDatas;
 import com.hoolai.bi.entiy.ReportType;
 import com.hoolai.bi.entiy.ExtraType;
+import com.hoolai.bi.entiy.excel.Excel;
 import org.springframework.util.CollectionUtils;
 
 import java.util.*;
@@ -14,15 +16,14 @@ import java.util.stream.Collectors;
  * @time: 2019-10-10 17:17
  */
 
-public class ShareRetentions {
+public class RetentionDatas implements ExcelDatas {
     private Map<String, List<ShareRetention>> shareRetentions;
+    private ReportType type;
     private ExtraType extraType;
 
-    public ShareRetentions() {
-    }
-
-    public ShareRetentions(Map<String, List<ShareRetention>> shareRetentions, ExtraType extraType) {
+    public RetentionDatas(Map<String, List<ShareRetention>> shareRetentions, ReportType type,ExtraType extraType) {
         this.shareRetentions = shareRetentions;
+        this.type = type;
         this.extraType = extraType;
     }
 
@@ -32,18 +33,26 @@ public class ShareRetentions {
         if (CollectionUtils.isEmpty(shareRetentionList)) {
             return new ArrayList<>();
         }
-        switch (extraType) {
-            case ALL:
+        switch (type) {
+            case RETWNTION:
                 result.put(ReportType.RETWNTION.getName(), shareRetentionList);
                 break;
-            case OS:
+            case RETWNTION_OS:
                 result = shareRetentionList.stream().collect(Collectors.groupingBy(shareRetention -> ((ShareOsRetention) shareRetention).getOs()));
                 break;
-            case CREATIVE:
+            case RETWNTION_CREATIVE:
                 result = shareRetentionList.stream().collect(Collectors.groupingBy(shareRetention -> ((ShareCreativeRetention) shareRetention).getCreative()));
                 break;
         }
         return new ArrayList<>(result.values());
+    }
+
+    public ExtraType getExtraType() {
+        return extraType;
+    }
+
+    public void setExtraType(ExtraType extraType) {
+        this.extraType = extraType;
     }
 
     public Map<String, List<ShareRetention>> getShareRetentions() {
@@ -54,12 +63,12 @@ public class ShareRetentions {
         this.shareRetentions = shareRetentions;
     }
 
-    public ExtraType getExtraType() {
-        return extraType;
+    public ReportType getType() {
+        return type;
     }
 
-    public void setExtraType(ExtraType extraType) {
-        this.extraType = extraType;
+    public void setType(ReportType type) {
+        this.type = type;
     }
 
 }

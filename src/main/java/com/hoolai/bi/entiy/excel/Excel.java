@@ -1,18 +1,10 @@
-package com.hoolai.bi.service;
+package com.hoolai.bi.entiy.excel;
 
-import com.alibaba.excel.EasyExcel;
-import com.alibaba.excel.ExcelWriter;
-import com.alibaba.excel.write.metadata.WriteSheet;
-import com.alibaba.excel.write.metadata.WriteTable;
 import com.google.common.collect.Lists;
 import com.hoolai.bi.context.ReportEnvConfig;
-import com.hoolai.bi.entiy.DateUtil;
-import com.hoolai.bi.entiy.ReportType;
-import com.hoolai.bi.entiy.ExtraType;
-import com.hoolai.bi.entiy.excel.ExcelStyleStrategy;
+import com.hoolai.bi.entiy.*;
+import com.hoolai.bi.entiy.retention.RetentionDatas;
 import com.hoolai.bi.entiy.retention.ShareRetention;
-import com.hoolai.bi.entiy.retention.ShareRetentions;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
 
 import java.text.DecimalFormat;
@@ -23,36 +15,23 @@ import java.util.List;
 /**
  * @description:
  * @author: Ksssss(chenlin @ hoolai.com)
- * @time: 2019-10-10 16:00
+ * @time: 2019-10-16 17:55
  */
 
-public abstract class RetentionReportService {
-
-    @Autowired
-    private ReportEnvConfig config;
-    @Autowired
-    private ExcelStyleStrategy excelStyleStrategy;
+public class Excel {
     DecimalFormat df = new DecimalFormat("0.00%");
+    private ReportEnvConfig config;
+    private List<List<Object>> rows = new ArrayList<>();
+    private List<List<String>> heads = new ArrayList<>();
 
-    public void writeRetention(String startDs, String endDs, int gameId, ExcelWriter excelWriter, int i, ReportType type) {
-        WriteSheet writeSheet;
-        ShareRetentions shareRetentions = produceRetention(startDs, endDs, gameId);
-
-        writeSheet = EasyExcel.writerSheet(i, type.getName()).needHead(Boolean.FALSE).build();
-        List<List<Object>> rows = rows(startDs, endDs, shareRetentions);
-        List<List<String>> headList = headLists(startDs, endDs, shareRetentions.getExtraType());
-        WriteTable table = EasyExcel.writerTable(0).registerWriteHandler(excelStyleStrategy.customCellStyle()).needHead(true).build();
-        table.setHead(headList);
-        excelWriter.write(rows, writeSheet, table);
+    public static Excel fullExcel(QueryInfo info,ExcelDatas excelDatas, ReportEnvConfig config) {
+        Excel excel = new Excel();
+        RetentionDatas retentionDatas = (RetentionDatas)excelDatas;
+        excel.setConfig(config);
+        excel.fullRows(info.getStartDs(),info.getEndDs(),retentionDatas);
+        excel.fullHeads(info.getStartDs(),info.getEndDs(),retentionDatas.getExtraType());
+        return excel;
     }
-
-    /**
-     * @param startDs
-     * @param endDs
-     * @param gameId
-     * @return
-     */
-    protected abstract ShareRetentions produceRetention(String startDs, String endDs, int gameId);
 
     /**
      * @param startDs
@@ -60,27 +39,25 @@ public abstract class RetentionReportService {
      * @return
      * @description: 动态添加 rows --> 所有行集合
      */
-    private List<List<Object>> rows(String startDs, String endDs, ShareRetentions shareRetentions) {
-        List<List<Object>> rows = new ArrayList<>();
+    public void fullRows(String startDs,String endDs,RetentionDatas excelDatas) {
         int intervalDay = 0;
         int suitDay = chooseSuitDayNum(DateUtil.dateCompare(endDs, startDs));
-        for (String ds = endDs; DateUtil.dateCompare(ds, startDs) >= 0; ds = DateUtil.dateCalculate(ds,-1)) {
-            List<List<ShareRetention>> shareRetentionLists = shareRetentions.groupAndGetKey(ds);
+        for (String ds = endDs; DateUtil.dateCompare(ds, startDs) >= 0; ds = DateUtil.dateCalculate(ds, -1)) {
+            List<List<ShareRetention>> shareRetentionLists = excelDatas.groupAndGetKey(ds);
             if (CollectionUtils.isEmpty(shareRetentionLists)) {
                 continue;
             }
             intervalDay = DateUtil.dateCompare(endDs, ds);
 
             intervalDay = chooseSuitDayNum(intervalDay);
-            if (intervalDay <= 0) return rows;
+            if (intervalDay <= 0) return ;
 
             for (List<ShareRetention> shareRetentionList : shareRetentionLists) {
-                List<Object> row = fullRow(intervalDay, suitDay, ds, shareRetentionList, shareRetentions.getExtraType());
+                List<Object> row = fullRow(intervalDay, suitDay, ds, shareRetentionList,excelDatas.getExtraType());
                 rows.add(new ArrayList<>(row));
             }
 
         }
-        return rows;
     }
 
     /**
@@ -91,13 +68,13 @@ public abstract class RetentionReportService {
      * @return
      * @description 动态填充row
      */
-    private List<Object>  fullRow(int intervalDay, int suitDay, String ds, List<ShareRetention> shareRetentions, ExtraType type) {
+    private List<Object> fullRow(int intervalDay, int suitDay, String ds, List<ShareRetention> shareRetentions, ExtraType type) {
         List<Object> row = Lists.newLinkedList();
         ShareRetention retention = shareRetentions.stream().findAny().get();
         for (int i = 0; i < suitDay + intervalDay + type.getNeedRowLength(); i++) {
             if (i == 0) {
                 row.add(ds);
-                type.addExtraCell(row,retention);
+                type.addExtraCell(row, retention);
                 row.add(shareRetentions.stream().findAny().get().getInstallNum());
                 continue;
             }
@@ -125,24 +102,22 @@ public abstract class RetentionReportService {
      * @return
      * @description: 动态添加 head --> 所有head
      */
-    private List<List<String>> headLists(String startDs, String endDs, ExtraType type) {
-        List<List<String>> headList = new ArrayList<>();
+    public void fullHeads(String startDs, String endDs, ExtraType type) {
         int suitDay = chooseSuitDayNum(DateUtil.dateCompare(endDs, startDs));
 
         for (int i = 0; i <= suitDay; i++) {
             if (i == 0) {
                 for (String head : type.getNeedExcelHead()) {
-                    headList.add(Collections.singletonList(head));
+                    heads.add(Collections.singletonList(head));
                 }
                 continue;
             }
-            headList.add(Collections.singletonList(i + "日"));
+            heads.add(Collections.singletonList(i + "日"));
         }
 
         for (int i = 1; i <= suitDay; i++) {
-            headList.add(Collections.singletonList(i + "日人数"));
+            heads.add(Collections.singletonList(i + "日人数"));
         }
-        return headList;
     }
 
     private int chooseSuitDayNum(int intervalDay) {
@@ -150,5 +125,37 @@ public abstract class RetentionReportService {
             intervalDay = config.getMaxRetentionDay();
         }
         return intervalDay;
+    }
+
+    public List<List<Object>> getRows() {
+        return rows;
+    }
+
+    public void setRows(List<List<Object>> rows) {
+        this.rows = rows;
+    }
+
+    public List<List<String>> getHeads() {
+        return heads;
+    }
+
+    public void setHeads(List<List<String>> heads) {
+        this.heads = heads;
+    }
+
+    public ReportEnvConfig getConfig() {
+        return config;
+    }
+
+    public void setConfig(ReportEnvConfig config) {
+        this.config = config;
+    }
+
+    public DecimalFormat getDf() {
+        return df;
+    }
+
+    public void setDf(DecimalFormat df) {
+        this.df = df;
     }
 }
