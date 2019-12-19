@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hoolai.bi.mapper.OnlineDurationMapper">
+
+    <select id="query" resultType="com.hoolai.bi.entiy.duration.OnlineDuration">
+      SELECT
+	install_ds ds,
+	snid,
+	gameid,
+	duration,
+	duration_numbers numbers,
+	duration_retention_numbers retention_numbers,
+	ROUND( duration_retention_numbers / duration_numbers, 4 ) retention_ratio
+FROM
+	online_duration_distributions
+	where
+	gameid = #{gameId}
+        AND ds>=#{startDs}
+        AND ds&lt;=#{endDs}
+
+    </select>
+</mapper>

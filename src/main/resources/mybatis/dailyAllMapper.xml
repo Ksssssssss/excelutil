@@ -27,7 +27,10 @@ SELECT
 	ROUND(dau_unknown_num/dau_num,4) dau_unknown_rate,
    	exchange_times as exchange_my_times,
     exchange_count as exchange_my_nums,
-    exchange_amount as exchange_my_amount
+    exchange_amount as exchange_my_amount,
+    visits,
+    FORMAT(average_visits,2) as average_visits,
+    FORMAT(average_stay_time,0) as average_stay_time
 FROM
 	(
 	SELECT
@@ -80,5 +83,18 @@ FROM
 	AND ds>=#{startDs}
 	AND ds&lt;=#{endDs}
 	) t_4 ON t_2.ds = t_4.ds
+	    LEFT JOIN (
+	SELECT
+	ds,
+	visits,
+    average_visits,
+    average_stay_time
+	FROM
+	visit_trending
+	WHERE
+	gameid = #{gameId}
+	AND ds>=#{startDs}
+	AND ds&lt;=#{endDs}
+	) t_5 ON t_2.ds = t_5.ds
 	</select>
 </mapper>

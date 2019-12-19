@@ -1,7 +1,7 @@
 package com.hoolai.bi.service.impl;
 
 
-import com.hoolai.bi.entiy.ExtraType;
+import com.hoolai.bi.excel.info.ExtraType;
 import com.hoolai.bi.entiy.ReportType;
 import com.hoolai.bi.entiy.retention.RetentionDatas;
 import com.hoolai.bi.entiy.retention.ShareCreativeRetention;

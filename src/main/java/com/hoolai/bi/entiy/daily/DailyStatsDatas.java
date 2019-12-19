@@ -1,8 +1,7 @@
 package com.hoolai.bi.entiy.daily;
 
 import com.hoolai.bi.context.ReportEnvConfig;
-import com.hoolai.bi.entiy.ExcelDatas;
-import com.hoolai.bi.entiy.ExtraType;
+import com.hoolai.bi.excel.ExcelDatas;
 import com.hoolai.bi.entiy.ReportType;
 
 import java.util.Comparator;

@@ -4,7 +4,9 @@ import com.google.common.collect.Maps;
 import com.hoolai.bi.context.ReportEnvConfig;
 import com.hoolai.bi.entiy.*;
 ;
-import com.hoolai.bi.entiy.retention.ShareRetention;
+import com.hoolai.bi.excel.ExcelDatas;
+import com.hoolai.bi.excel.info.ExtraType;
+import com.hoolai.bi.util.DateUtil;
 import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
@@ -74,16 +76,21 @@ public class InstallIncomes implements ExcelDatas {
     public void fullEmptyRow(List<Object> row) {
         List<Integer> indexs = new ArrayList<>();
         for (int i = extraType.getNeedRowLength() + 1; i < row.size(); i++) {
-            if (!row.get(i).equals("0.00")) {
+            if (!row.get(i).equals("0")) {
                 indexs.add(i);
             }
         }
-        if (indexs.size() <= 1) {
+        if (indexs.size() < 1) {
             return;
         }
         float incomeRate = 0f;
-        for (int i = 1; i < indexs.size(); i++) {
+        for (int i = 1; i <= indexs.size(); i++) {
             for (int j = indexs.get(i - 1); j < row.size(); j++) {
+                if (i == indexs.size()) {
+                    row.set(j,row.get(indexs.get(i-1)));
+                    continue;
+                }
+
                 if (j < indexs.get(i)) {
                     row.set(j, row.get(indexs.get(i - 1)));
                 }

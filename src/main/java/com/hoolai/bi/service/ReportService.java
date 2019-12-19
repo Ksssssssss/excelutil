@@ -1,10 +1,7 @@
 package com.hoolai.bi.service;
 
-import com.hoolai.bi.entiy.ExcelDatas;
-import com.hoolai.bi.entiy.daily.DailyStats;
+import com.hoolai.bi.excel.ExcelDatas;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 /**
  *
@@ -14,7 +11,7 @@ import java.util.List;
  * 
  */
 
-@Service
 public interface ReportService {
     public ExcelDatas produceDatas(String startDs, String endDs, int gameId);
+
 }

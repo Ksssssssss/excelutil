@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hoolai.bi.mapper.RankDistributionsMapper">
+
+    <select id="queryDauRanks" resultType="com.hoolai.bi.entiy.rank.RankDistribution">
+        SELECT
+        t_1.*,t_2.dau_num total_numbers
+        FROM
+        (
+        SELECT
+        snid,
+        gameid,
+        ds,
+        LEVEL,
+        dau_level_numbers numbers
+        FROM
+        level_distributions
+        WHERE
+        gameid = #{gameId}
+        AND ds>=#{startDs}
+        AND ds&lt;=#{endDs}
+        and dau_level_numbers!=0) t_1
+        JOIN ( SELECT ds,dau_num FROM daily_stats WHERE gameid = #{gameId}
+        AND ds>=#{startDs}
+        AND ds&lt;=#{endDs} ) t_2 ON
+        t_1.ds = t_2.ds
+    </select>
+    <select id="queryInstallRanks" resultType="com.hoolai.bi.entiy.rank.RankDistribution">
+        SELECT
+        t_1.*,t_2.install_num total_numbers
+        FROM
+        (
+        SELECT
+	snid,
+	gameid,
+	ds,
+	LEVEL,
+	install_level_numbers numbers
+FROM
+	level_distributions
+WHERE
+	gameid = #{gameId}
+	AND ds>=#{startDs}
+	AND ds&lt;=#{endDs}
+	and install_level_numbers!=0) t_1
+        JOIN ( SELECT ds,install_num FROM daily_stats WHERE gameid = #{gameId}
+        AND ds>=#{startDs}
+        AND ds&lt;=#{endDs} ) t_2 ON
+        t_1.ds = t_2.ds
+    </select>
+</mapper>

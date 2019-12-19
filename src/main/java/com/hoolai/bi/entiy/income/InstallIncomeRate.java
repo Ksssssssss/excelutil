@@ -1,13 +1,10 @@
 package com.hoolai.bi.entiy.income;
 
-import com.alibaba.excel.annotation.ExcelProperty;
 import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
 import com.hoolai.bi.context.ReportEnvConfig;
-import com.hoolai.bi.entiy.DateUtil;
-import com.hoolai.bi.entiy.ExtraType;
+import com.hoolai.bi.util.DateUtil;
+import com.hoolai.bi.excel.info.ExtraType;
 import com.hoolai.bi.entiy.GameInfo;
-import javafx.beans.binding.ObjectExpression;
 
 import java.text.DecimalFormat;
 import java.util.List;
@@ -42,6 +39,9 @@ public class InstallIncomeRate extends GameInfo {
     }
 
     public void fullRow(List<Object> row, ExtraType type) {
+        if (incomeRate == 0){
+            return;
+        }
         row.set(incomeDay + type.getNeedRowLength() + 1, df.format(incomeRate));
     }
 

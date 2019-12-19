@@ -26,11 +26,20 @@ public class ShareRetention extends GameInfo {
     public ShareRetention() {
     }
 
+    private ShareRetention(int dr)
+    {
+        this.dr = dr;
+    }
+
+    public static ShareRetention createRetentionOnlyDr(int dr) {
+        ShareRetention shareRetention = new ShareRetention(dr);
+        return shareRetention;
+    }
+
     public ShareRetention(String ds, int dr, int retention, String os, String creative, int clientid, String retentionPercentage, float retentionPercentages) {
         this.ds = ds;
         this.dr = dr;
         this.retention = retention;
-
         this.retentionPercentages = retentionPercentages;
     }
 
@@ -78,7 +87,7 @@ public class ShareRetention extends GameInfo {
     public String toString() {
         return "ShareRetention{" +
                 "dr=" + dr +
-                ", retention=" + retention +
+                ", retentionwriter=" + retention +
                 ", installNum=" + installNum +
                 ", retentionPercentages=" + retentionPercentages +
                 ", gameid=" + gameid +

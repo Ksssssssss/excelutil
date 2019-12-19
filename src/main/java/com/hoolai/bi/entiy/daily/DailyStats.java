@@ -4,9 +4,14 @@ import com.alibaba.excel.annotation.ExcelIgnore;
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.alibaba.excel.annotation.format.NumberFormat;
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.hoolai.bi.context.GameContext;
 import com.hoolai.bi.context.ReportEnvConfig;
-import com.hoolai.bi.entiy.DateUtil;
+import com.hoolai.bi.util.DateUtil;
 import com.hoolai.bi.entiy.GameInfo;
+import com.hoolai.bi.util.SpringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import sun.tools.tree.Context;
 
 /**
  * @description:
@@ -14,6 +19,7 @@ import com.hoolai.bi.entiy.GameInfo;
  * @time: 2019-09-29 11:04
  */
 
+@Component
 public abstract class DailyStats extends GameInfo {
     @ExcelProperty(value = "活跃")
     private int dauNum;
@@ -45,13 +51,7 @@ public abstract class DailyStats extends GameInfo {
     private float payInstallAmount;
     @ExcelProperty("安装付费次数")
     private int payInstallTimes;
-    @ExcelProperty("新付费人数")
-    private int newPayCount;
-    @NumberFormat("0.00")
-    @ExcelProperty(value = "新付费金额（元）")
-    private float newPayAmount;
-    @ExcelProperty("新付费次数")
-    private int newPayTimes;
+
     @TableField(exist = false)
     @ExcelProperty("安装付费率")
     private String installPayRate;
@@ -59,13 +59,23 @@ public abstract class DailyStats extends GameInfo {
     @TableField(exist = false)
     @ExcelProperty("安装arpu(元)")
     private String installArpu;
-
     @TableField(exist = false)
     @ExcelProperty("安装arppu(元)")
     private String installArppu;
 
+    @ExcelProperty("新付费人数")
+    private int newPayCount;
+    @NumberFormat("0.00")
+    @ExcelProperty(value = "新付费金额（元）")
+    private float newPayAmount;
+    @ExcelProperty("新付费次数")
+    private int newPayTimes;
+
+    public DailyStats() {
+    }
+
     public void init(ReportEnvConfig config) {
-        initRate(config.getChangeRateDs(),config.getRate());
+        initRate(config.getChangeRateDs(), config.getRate());
         arpu = String.format("%.2f", checkDivide(payAmount, dauNum));
         arppu = String.format("%.2f", checkDivide(payAmount, payCount));
         payRate = String.format("%.2f", checkDivide(payCount, dauNum) * 100) + "%";
@@ -74,20 +84,11 @@ public abstract class DailyStats extends GameInfo {
         installArppu = String.format("%.2f", checkDivide(payInstallAmount, payInstallCount));
     }
 
-    private float checkDivide(float divisor, int dividend) {
-        float result = divisor / dividend;
-        if (Float.isNaN(result) || Float.isInfinite(result)) {
-            return 0.0f;
-        }
-        return result;
-    }
-
-    private void initRate(String changeRateDs,int rate) {
-        if (DateUtil.dateCompare(ds, changeRateDs) < 0) {
-            payAmount *= rate;
-            payInstallAmount *= rate;
-            newPayAmount *= rate;
-        }
+    private void initRate(String changeRateDs, int rate) {
+        float currencyRate = gameContext.get(gameid).getCurrencyRate();
+        payAmount /= currencyRate;
+        payInstallAmount /= currencyRate;
+        newPayAmount /= currencyRate;
     }
 
     public boolean checkZero() {
@@ -123,7 +124,7 @@ public abstract class DailyStats extends GameInfo {
     }
 
     public void setPayAmount(float payAmount) {
-        this.payAmount = payAmount / 1000.0f;
+        this.payAmount = payAmount;
     }
 
     public int getPayTimes() {
@@ -147,7 +148,7 @@ public abstract class DailyStats extends GameInfo {
     }
 
     public void setPayInstallAmount(float payInstallAmount) {
-        this.payInstallAmount = payInstallAmount / 1000.0f;
+        this.payInstallAmount = payInstallAmount;
     }
 
     public int getPayInstallTimes() {
@@ -171,7 +172,7 @@ public abstract class DailyStats extends GameInfo {
     }
 
     public void setNewPayAmount(float newPayAmount) {
-        this.newPayAmount = newPayAmount / 1000.0f;
+        this.newPayAmount = newPayAmount;
     }
 
     public int getNewPayTimes() {

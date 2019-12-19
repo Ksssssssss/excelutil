@@ -1,10 +1,9 @@
 package com.hoolai.bi.entiy.retention;
 
 import com.google.common.collect.Maps;
-import com.hoolai.bi.entiy.ExcelDatas;
+import com.hoolai.bi.excel.ExcelDatas;
 import com.hoolai.bi.entiy.ReportType;
-import com.hoolai.bi.entiy.ExtraType;
-import com.hoolai.bi.entiy.excel.Excel;
+import com.hoolai.bi.excel.info.ExtraType;
 import org.springframework.util.CollectionUtils;
 
 import java.util.*;

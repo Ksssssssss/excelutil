@@ -15,7 +15,7 @@ import com.hoolai.bi.entiy.daily.DailyExtraInfo;
  * 
  */
  
-public class ExtraInfoConvert implements Converter<DailyExtraInfo> {
+public class  ExtraInfoConvert implements Converter<DailyExtraInfo> {
 
     public ExtraInfoConvert() {
     }

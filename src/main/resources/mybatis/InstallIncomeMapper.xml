@@ -7,7 +7,7 @@
         t_1.ds ds,install_num,gameid,snid,income_day,income
         FROM
         ( SELECT ds,install_num FROM daily_stats WHERE gameid = #{gameId} AND ds >=#{startDs} AND ds &lt;=#{endDs} ) t_1
-        JOIN (
+        left JOIN (
         SELECT
         ds,
         gameid,
@@ -22,10 +22,12 @@
         AND install_ds >=#{startDs}
         AND install_ds &lt;=#{endDs}
         AND ds >= install_ds
-        AND ds &lt;= DATE_ADD(install_ds,INTERVAL 90 DAY)
+        AND ds &lt;= DATE_ADD(install_ds,INTERVAL 29 DAY)
+        AND ds &lt;=#{endDs}
         GROUP BY
         install_ds,
         ds,snid,gameid
         ) t_2 ON t_1.ds = t_2.install_ds
+
     </select>
 </mapper>

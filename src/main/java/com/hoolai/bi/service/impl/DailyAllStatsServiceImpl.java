@@ -1,14 +1,10 @@
 package com.hoolai.bi.service.impl;
 
-import com.alibaba.excel.ExcelWriter;
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.hoolai.bi.entiy.ExcelDatas;
+import com.hoolai.bi.excel.ExcelDatas;
 import com.hoolai.bi.entiy.ReportType;
 import com.hoolai.bi.entiy.daily.DailyStats;
 import com.hoolai.bi.entiy.daily.DailyStatsDatas;
 import com.hoolai.bi.mapper.DailyAllStatsMapper;
-import com.hoolai.bi.mapper.DailyStatsMapper;
-import com.hoolai.bi.service.DailyReportService;
 import com.hoolai.bi.service.ReportService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

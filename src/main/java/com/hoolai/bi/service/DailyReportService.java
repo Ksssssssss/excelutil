@@ -2,13 +2,11 @@ package com.hoolai.bi.service;
 
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.ExcelWriter;
-import com.alibaba.excel.annotation.ExcelIgnore;
 import com.alibaba.excel.write.metadata.WriteSheet;
-import com.baomidou.mybatisplus.annotation.TableField;
 import com.hoolai.bi.context.ReportEnvConfig;
 import com.hoolai.bi.entiy.ReportType;
 import com.hoolai.bi.entiy.daily.DailyStats;
-import com.hoolai.bi.entiy.excel.ExcelStyleStrategy;
+import com.hoolai.bi.excel.info.ExcelStyleStrategy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

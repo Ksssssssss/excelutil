@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hoolai.bi.mapper.AdTrackingMapper">
+
+    <select id="query" resultType="com.hoolai.bi.entiy.ad.AdTracking">
+      SELECT t_1.*,t_2.DESC FROM(
+SELECT * FROM ad_tracking WHERE snid=1 AND gameid = #{gameId}
+	AND ds>=#{startDs}
+	AND ds&lt;=#{endDs}) t_1
+JOIN
+(SELECT ifa,`desc` FROM ad_extra_info) t_2 ON t_1.ifa = t_2.ifa
+    </select>
+</mapper>

@@ -1,13 +1,11 @@
 package com.hoolai.bi.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.google.common.collect.Lists;
 import com.hoolai.bi.entiy.ReportType;
 import com.hoolai.bi.entiy.daily.DailyOsStats;
 import com.hoolai.bi.entiy.daily.DailyStats;
 import com.hoolai.bi.entiy.daily.DailyStatsDatas;
 import com.hoolai.bi.mapper.DailyOsStatsMapper;
-import com.hoolai.bi.service.DailyReportService;
 import com.hoolai.bi.service.ReportService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

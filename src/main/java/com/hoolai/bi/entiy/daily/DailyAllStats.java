@@ -3,6 +3,8 @@ package com.hoolai.bi.entiy.daily;
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.hoolai.bi.context.ReportEnvConfig;
 
+import java.util.Optional;
+
 /**
  * @description:
  * @author: Ksssss(chenlin @ hoolai.com)
@@ -25,12 +27,19 @@ public class DailyAllStats extends DailyStats {
     @ExcelProperty(value = {"安装", "unknown"}, index = 8)
     private String installUnknownRate;
 
-    @ExcelProperty(value = "萌币兑换次数",index = 9)
+    @ExcelProperty(value = "萌币兑换次数", index = 9)
     private int exchangeMyTimes;
-    @ExcelProperty(value = "萌币兑换人数",index = 10)
+    @ExcelProperty(value = "萌币兑换人数", index = 10)
     private int exchangeMyNums;
-    @ExcelProperty(value = "萌币兑换金额",index = 11)
+    @ExcelProperty(value = "萌币兑换金额", index = 11)
     private String exchangeMyAmount;
+
+    @ExcelProperty(value = "访问次数", index = 12)
+    private String visits;
+    @ExcelProperty(value = "人均访问次数", index = 13)
+    private String averageVisits;
+    @ExcelProperty(value = "人均停留时长(秒)", index = 14)
+    private String averageStayTime;
 
     @Override
     public void init(ReportEnvConfig config) {
@@ -44,7 +53,8 @@ public class DailyAllStats extends DailyStats {
     }
 
     private String changeRate(String rate) {
-        return String.format("%.2f", Float.parseFloat(rate) * 100) + "%";
+        Optional<String> optional = Optional.ofNullable(rate);
+        return String.format("%.2f", Float.parseFloat(optional.orElse("0")) * 100) + "%";
     }
 
 
@@ -118,5 +128,29 @@ public class DailyAllStats extends DailyStats {
 
     public void setExchangeMyAmount(String exchangeMyAmount) {
         this.exchangeMyAmount = exchangeMyAmount;
+    }
+
+    public String getVisits() {
+        return visits;
+    }
+
+    public void setVisits(String visits) {
+        this.visits = visits;
+    }
+
+    public String getAverageVisits() {
+        return averageVisits;
+    }
+
+    public void setAverageVisits(String averageVisits) {
+        this.averageVisits = averageVisits;
+    }
+
+    public String getAverageStayTime() {
+        return averageStayTime;
+    }
+
+    public void setAverageStayTime(String averageStayTime) {
+        this.averageStayTime = averageStayTime;
     }
 }

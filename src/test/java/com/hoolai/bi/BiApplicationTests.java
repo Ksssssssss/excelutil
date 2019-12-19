@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.hoolai.bi.context.ReportEnvConfig;
-import com.hoolai.bi.entiy.DateUtil;
+import com.hoolai.bi.util.DateUtil;
 import com.hoolai.bi.entiy.daily.DailyOsStats;
 import com.hoolai.bi.entiy.daily.DailyStats;
 import com.hoolai.bi.entiy.ReportType;
@@ -62,18 +62,39 @@ public class BiApplicationTests {
     }
 
     @Test
-    public void calculate(){
-        System.out.println(reportEnvConfig.getChangeRateDs());
+    public void calculate() {
+        String m = "5-10";
+        String n = "10-20";
+        System.out.println(m.getBytes());
+        System.out.println(n.getBytes());
+//        System.out.println(Integer.parseInt(n));
+
+        System.out.println(m.compareTo(n));
     }
 
     @Test
-    public void date(){
-        int day = DateUtil.dateCompare("2019-09-29", "2019-09-26");
-        System.out.println(day);
+    public void round() {
+        Date date = new Date();
+        System.out.println(new Random().nextInt(10));
     }
 
     @Test
-    public void enumTest(){
+    public void date() {
+        long start = System.currentTimeMillis();
+        System.out.println("start::" + System.currentTimeMillis());
+
+        long count = 0l;
+        for (long i = 0l; i < Integer.MAX_VALUE; i++) {
+            count += i;
+        }
+        long end = System.currentTimeMillis();
+        System.out.println("end::" + System.currentTimeMillis());
+        System.out.println(end-start);
+
+    }
+
+    @Test
+    public void enumTest() {
         System.out.println(ReportType.ALL.getName());
     }
 

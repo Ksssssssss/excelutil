@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hoolai.bi.mapper.DeviceDistributionsMapper">
+
+    <select id="queryInstallDevice" resultType="com.hoolai.bi.entiy.device.DeviceDistribution">
+        SELECT
+    snid,gameid,ds,
+	device,
+	device_install_numbers numbers,
+	ROUND( device_install_numbers / t_1.all_install_numbers, 4 ) ratio
+FROM
+	device_distributions,
+	(SELECT SUM( device_install_numbers ) all_install_numbers FROM device_distributions WHERE snid = 1 AND gameid = #{gameId}
+        AND ds=#{endDs}) t_1
+    where
+        ds=#{endDs}
+        AND gameid = #{gameId}
+        and device_install_numbers&lt;&gt;0
+ORDER BY
+	ratio DESC
+    </select>
+</mapper>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hoolai.bi.mapper.LoadLossMapper">
+
+    <select id="query" resultType="com.hoolai.bi.entiy.loadloss.LoadLoss">
+    SELECT
+	snid,gameid,ds,step,numbers,description
+FROM
+	( SELECT snid, gameid, ds, step, numbers FROM load_loss WHERE snid = 1 AND gameid = #{gameId} AND ds = #{ds} ) t_1
+	JOIN ( SELECT id, description FROM recode_desc WHERE gameid = #{gameId} AND snid = 1 ) t_2 ON t_1.step = t_2.id
+    </select>
+</mapper>

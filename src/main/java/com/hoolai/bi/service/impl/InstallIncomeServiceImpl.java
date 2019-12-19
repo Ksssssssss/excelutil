@@ -1,8 +1,8 @@
 package com.hoolai.bi.service.impl;
 
 import com.google.common.collect.Maps;
-import com.hoolai.bi.entiy.DateUtil;
-import com.hoolai.bi.entiy.ExtraType;
+import com.hoolai.bi.util.DateUtil;
+import com.hoolai.bi.excel.info.ExtraType;
 import com.hoolai.bi.entiy.ReportType;
 import com.hoolai.bi.entiy.income.InstallIncomeRate;
 import com.hoolai.bi.entiy.income.InstallIncomes;
