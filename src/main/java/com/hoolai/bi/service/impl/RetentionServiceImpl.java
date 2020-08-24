@@ -24,9 +24,9 @@ public class RetentionServiceImpl implements ReportService {
     private RetentionMapper retentionMapper;
 
     @Override
-    public RetentionDatas produceDatas(String startDs, String endDs, int gameId) {
+    public RetentionDatas produceDatas(String startDs, String endDs, int gameId, int snid) {
         List<ShareRetention> retentionResultTypes = retentionMapper.queryRetens(gameId, startDs, endDs);
         Map<String, List<ShareRetention>> shareRetentionMap = retentionResultTypes.stream().collect(Collectors.groupingBy(retention -> retention.getDs()));
-        return new RetentionDatas(shareRetentionMap, ReportType.RETWNTION, ExtraType.ALL);
+        return new RetentionDatas(shareRetentionMap, ReportType.RETWNTION, ExtraType.SIMPLE);
     }
 }

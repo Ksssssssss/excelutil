@@ -7,7 +7,8 @@
     </sql>
 
     <select id="queryRetentionCreative" resultType="com.hoolai.bi.entiy.retention.ShareCreativeRetention">
-        SELECT t_1.gameid,t_1.snid,t_3.retention,t_3.ds,t_1.install_num,t_3.dr,t_3.creative ,ROUND(t_3.retention/t_1.install_num,4) retentionPercentages
+SELECT gameid,snid,retention,ds,install_num,dr,IFNULL(creative_name,creative) creative,retentionPercentages FROM (
+SELECT t_1.gameid,t_1.snid,t_3.retention,t_3.ds,t_1.install_num,t_3.dr,t_3.creative ,ROUND(t_3.retention/t_1.install_num,4) retentionPercentages
         from
         (SELECT gameid,snid,ds,creative,SUM(install_num) install_num FROM daily_os_creative_stats WHERE ds>=#{startDs} and ds&lt;=#{endDs}	AND gameid=#{gameId} GROUP BY gameid,snid,ds,creative) t_1
         JOIN
@@ -21,7 +22,9 @@
         ds>=#{startDs}
         and ds&lt;=#{endDs}
 				GROUP BY ds,dr,creative) t_2) t_3 ON t_1.ds=t_3.ds AND t_1.creative=t_3.creative
-        ORDER BY ds,dr
+) t_4
+LEFT JOIN (SELECT creativeid, creative_name FROM game_creative WHERE gameid=#{gameId} ) t_5 ON t_4.creative = t_5.creativeid
+	ORDER BY ds,dr desc
     </select>
 
 </mapper>

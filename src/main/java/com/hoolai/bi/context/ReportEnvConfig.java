@@ -1,6 +1,7 @@
 package com.hoolai.bi.context;
 
 import com.google.common.collect.Maps;
+import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
@@ -13,6 +14,7 @@ import java.util.Map;
  * @time: 2019-10-11 14:41
  */
 @Component
+@Data
 @ConfigurationProperties(prefix = "report.env")
 public class ReportEnvConfig {
     /**
@@ -51,51 +53,4 @@ public class ReportEnvConfig {
         return result.get(gameId);
     }
 
-    public String getChangeRateDs() {
-        return changeRateDs;
-    }
-
-    public void setChangeRateDs(String changeRateDs) {
-        this.changeRateDs = changeRateDs;
-    }
-
-    public int getRate() {
-        return rate;
-    }
-
-    public void setRate(int rate) {
-        this.rate = rate;
-    }
-
-    public int getMaxRetentionDay() {
-        return maxRetentionDay;
-    }
-
-    public void setMaxRetentionDay(int maxRetentionDay) {
-        this.maxRetentionDay = maxRetentionDay;
-    }
-
-    public int getMaxInstallIncomeDay() {
-        return maxInstallIncomeDay;
-    }
-
-    public void setMaxInstallIncomeDay(int maxInstallIncomeDay) {
-        this.maxInstallIncomeDay = maxInstallIncomeDay;
-    }
-
-    public int getLevelDistributionSummary() {
-        return levelDistributionSummary;
-    }
-
-    public void setLevelDistributionSummary(int levelDistributionSummary) {
-        this.levelDistributionSummary = levelDistributionSummary;
-    }
-
-    public List<String> getGameInfos() {
-        return gameInfos;
-    }
-
-    public void setGameInfos(List<String> gameInfos) {
-        this.gameInfos = gameInfos;
-    }
 }

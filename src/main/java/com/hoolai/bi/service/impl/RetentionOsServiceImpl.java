@@ -26,7 +26,7 @@ public class RetentionOsServiceImpl implements ReportService {
     private RetentionOsMapper retentionOsMapper;
 
     @Override
-    public ExcelDatas produceDatas(String startDs, String endDs, int gameId) {
+    public ExcelDatas produceDatas(String startDs, String endDs, int gameId, int snid) {
         List<ShareOsRetention> retentionResultTypes = retentionOsMapper.queryRetentionOs(gameId, startDs, endDs);
         Map<String, List<ShareRetention>> shareRetentionMap = retentionResultTypes.stream().collect(Collectors.groupingBy(retention -> retention.getDs()));
         RetentionDatas retentionDatas = new RetentionDatas(shareRetentionMap, ReportType.RETWNTION_OS,ExtraType.OS);

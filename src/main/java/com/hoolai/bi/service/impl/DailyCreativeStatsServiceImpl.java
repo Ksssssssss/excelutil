@@ -1,8 +1,5 @@
 package com.hoolai.bi.service.impl;
 
-import com.alibaba.excel.ExcelWriter;
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.google.common.collect.Lists;
 import com.hoolai.bi.entiy.ReportType;
 import com.hoolai.bi.entiy.daily.DailyCreativeStats;
 import com.hoolai.bi.entiy.daily.DailyStats;
@@ -13,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -26,12 +24,14 @@ public class DailyCreativeStatsServiceImpl implements ReportService {
     private DailyCreativeStatsMapper dailyCreativeStatsMapper;
 
     @Override
-    public DailyStatsDatas produceDatas(String startDs, String endDs, int gameId) {
+    public DailyStatsDatas produceDatas(String startDs, String endDs, int gameId, int snid) {
         DailyStatsDatas dailyStatsDatas;
         List<DailyCreativeStats> dailyCreativeStatsList = dailyCreativeStatsMapper.queryCreativeList(gameId,startDs,endDs);
         List<DailyStats> dailyStatsList = new ArrayList<DailyStats>(dailyCreativeStatsList);
-        dailyStatsDatas = new DailyStatsDatas(dailyStatsList,ReportType.CREATIVE);
 
+        dailyStatsDatas = new DailyStatsDatas(dailyStatsList,ReportType.CREATIVE);
+        HashMap map = new HashMap();
+        map.clear();
         return dailyStatsDatas;
     }
 }

@@ -24,7 +24,7 @@ public class AdTrackingServiceImpl implements ReportService {
     private AdTrackingMapper adTrackingMapper;
 
     @Override
-    public ExcelDatas produceDatas(String startDs, String endDs, int gameId) {
+    public ExcelDatas produceDatas(String startDs, String endDs, int gameId, int snid) {
         List<AdTracking> adTrackings = adTrackingMapper.query(gameId,startDs,endDs);
         Datas datas = new Datas(ReportType.AD_TRACKING, adTrackings);
         return datas;

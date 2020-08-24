@@ -1,4 +1,4 @@
-package com.hoolai.bi.excel.behavior;
+package com.hoolai.bi.entiy.income;
 
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.ExcelWriter;

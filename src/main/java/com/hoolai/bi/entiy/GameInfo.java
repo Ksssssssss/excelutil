@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.hoolai.bi.context.GameContext;
 import com.hoolai.bi.util.SpringUtils;
+import lombok.Data;
 
 /**
  * @description:
@@ -14,6 +15,7 @@ import com.hoolai.bi.util.SpringUtils;
  * @time: 2019-09-30 11:49
  */
 
+@Data
 public class GameInfo {
     @TableId
     @ExcelIgnore
@@ -26,14 +28,6 @@ public class GameInfo {
     @ExcelIgnore
     protected int snid;
 
-    @ExcelIgnore
-    @TableField(exist = false)
-    protected GameContext gameContext;
-
-    public GameInfo() {
-        gameContext = SpringUtils.getBean(GameContext.class);
-    }
-
     protected float checkDivide(float divisor, int dividend) {
         float result = divisor / dividend;
         if (Float.isNaN(result) || Float.isInfinite(result)) {
@@ -42,35 +36,4 @@ public class GameInfo {
         return result;
     }
 
-    public int getGameid() {
-        return gameid;
-    }
-
-    public void setGameid(int gameid) {
-        this.gameid = gameid;
-    }
-
-    public String getDs() {
-        return ds;
-    }
-
-    public void setDs(String ds) {
-        this.ds = ds;
-    }
-
-    public int getSnid() {
-        return snid;
-    }
-
-    public void setSnid(int snid) {
-        this.snid = snid;
-    }
-
-    public GameContext getGameContext() {
-        return gameContext;
-    }
-
-    public void setGameContext(GameContext gameContext) {
-        this.gameContext = gameContext;
-    }
 }

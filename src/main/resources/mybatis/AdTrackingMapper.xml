@@ -3,11 +3,12 @@
 <mapper namespace="com.hoolai.bi.mapper.AdTrackingMapper">
 
     <select id="query" resultType="com.hoolai.bi.entiy.ad.AdTracking">
-      SELECT t_1.*,t_2.DESC FROM(
+      SELECT t_1.gameid,t_1.ds,snid,t_1.ifa,numbers,frequency,t_2.DESC,ROUND(numbers/dau_num,4) rate,frequency/dau_num average_frequency FROM(
 SELECT * FROM ad_tracking WHERE snid=1 AND gameid = #{gameId}
-	AND ds>=#{startDs}
-	AND ds&lt;=#{endDs}) t_1
+	AND ds=#{endDs}) t_1
 JOIN
-(SELECT ifa,`desc` FROM ad_extra_info) t_2 ON t_1.ifa = t_2.ifa
+(SELECT ifa,`desc` FROM ad_extra_info) t_2 ON t_1.ifa = t_2.ifa join
+(SELECT ds,dau_num FROM daily_stats where snid=1 AND gameid = #{gameId}
+	AND ds=#{endDs}) t_3 ON t_1.ds = t_3.ds
     </select>
 </mapper>

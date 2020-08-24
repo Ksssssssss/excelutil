@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hoolai.bi.mapper.ExtraMapper">
+
+    <select id="queryWus" resultType="com.hoolai.bi.entiy.daily.WeekInfo">
+		select snid,gameid,ds,wdu,wnu,week_payment from week_stats where snid=1 AND gameid = #{gameId}
+		and ds&lt;=#{endDs} and ds>=#{startDs}
+	</select>
+
+    <select id="queryMus" resultType="com.hoolai.bi.entiy.daily.MonthInfo">
+		select snid,gameid,ds,mdu,mnu,month_payment from month_stats where snid=1 AND gameid = #{gameId}
+		and ds&lt;=#{endDs} and ds>=#{startDs}
+	</select>
+
+    <select id="queryExtra" resultType="com.hoolai.bi.entiy.extra.Extra">
+		select snid,gameid,ds,winning_num,winning_count,ROUND(winning_num/winning_count,4) as wining_rate,retry_time,share_click,ROUND(men_count/winning_count,4) as choose_men_rate,1-ROUND(men_count/winning_count,4) as choose_woman_rate from extra where snid=1 AND gameid = #{gameId}
+		and ds&lt;=#{endDs} and ds>=#{startDs}
+	</select>
+</mapper>

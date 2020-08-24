@@ -3,6 +3,7 @@ package com.hoolai.bi.entiy.retention;
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.hoolai.bi.entiy.GameInfo;
+import lombok.Data;
 
 import java.util.List;
 
@@ -11,6 +12,8 @@ import java.util.List;
  * Date:     2019-08-05 14:49
  * Description:
  */
+
+@Data
 public class ShareRetention extends GameInfo {
 
     @TableId
@@ -26,14 +29,8 @@ public class ShareRetention extends GameInfo {
     public ShareRetention() {
     }
 
-    private ShareRetention(int dr)
-    {
+    private ShareRetention(int dr) {
         this.dr = dr;
-    }
-
-    public static ShareRetention createRetentionOnlyDr(int dr) {
-        ShareRetention shareRetention = new ShareRetention(dr);
-        return shareRetention;
     }
 
     public ShareRetention(String ds, int dr, int retention, String os, String creative, int clientid, String retentionPercentage, float retentionPercentages) {
@@ -41,46 +38,6 @@ public class ShareRetention extends GameInfo {
         this.dr = dr;
         this.retention = retention;
         this.retentionPercentages = retentionPercentages;
-    }
-
-    public String getDs() {
-        return ds;
-    }
-
-    public void setDs(String ds) {
-        this.ds = ds;
-    }
-
-    public int getDr() {
-        return dr;
-    }
-
-    public void setDr(int dr) {
-        this.dr = dr;
-    }
-
-    public int getRetention() {
-        return retention;
-    }
-
-    public void setRetention(int retention) {
-        this.retention = retention;
-    }
-
-    public float getRetentionPercentages() {
-        return retentionPercentages;
-    }
-
-    public void setRetentionPercentages(float retentionPercentages) {
-        this.retentionPercentages = retentionPercentages;
-    }
-
-    public int getInstallNum() {
-        return installNum;
-    }
-
-    public void setInstallNum(int installNum) {
-        this.installNum = installNum;
     }
 
     @Override

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hoolai.bi.mapper.IpAddressMapper">
+
+    <select id="queryProvince" resultType="com.hoolai.bi.entiy.ip2region.ProvinceAddress">
+
+SELECT
+snid,gameid,ds,
+IF(province = '0', '其他', province) province,
+	count( * ) numbers
+FROM
+	ip_address
+WHERE
+	snid = 1
+	AND gameid = #{gameId} AND ds = #{endDs}
+GROUP BY
+	province,
+	snid,gameid,ds
+	order by numbers desc;
+</select>
+    <select id="queryCity" resultType="com.hoolai.bi.entiy.ip2region.CityAddress">
+
+SELECT snid,gameid,ds,
+IF(city = '0', '其他', city) city,
+	count( * ) numbers
+FROM
+	ip_address
+WHERE
+	snid = 1 and
+gameid = #{gameId} AND ds = #{endDs}
+GROUP BY snid,gameid,ds,
+	city
+	order by numbers desc;
+</select>
+</mapper>

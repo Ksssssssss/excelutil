@@ -25,7 +25,7 @@ public class DailyOsStatsServiceImpl implements ReportService {
     private DailyOsStatsMapper dailyOsStatsMapper;
 
     @Override
-    public DailyStatsDatas produceDatas(String startDs, String endDs, int gameId) {
+    public DailyStatsDatas produceDatas(String startDs, String endDs, int gameId, int snid) {
         DailyStatsDatas dailyStatsDatas;
         List<DailyOsStats> queryDailyOsStatsList = dailyOsStatsMapper.selectList(new LambdaQueryWrapper<DailyOsStats>().ge(DailyStats::getDs, startDs).le(DailyStats::getDs, endDs).eq(DailyStats::getGameid, gameId));
         List<DailyStats> dailyStatsList = new ArrayList<DailyStats>(queryDailyOsStatsList);

@@ -1,7 +1,6 @@
 package com.hoolai.bi.service;
 
 import com.hoolai.bi.excel.ExcelDatas;
-import org.springframework.stereotype.Service;
 
 /**
  *
@@ -12,6 +11,6 @@ import org.springframework.stereotype.Service;
  */
 
 public interface ReportService {
-    public ExcelDatas produceDatas(String startDs, String endDs, int gameId);
+    public ExcelDatas produceDatas(String startDs, String endDs, int gameId, int snid);
 
 }

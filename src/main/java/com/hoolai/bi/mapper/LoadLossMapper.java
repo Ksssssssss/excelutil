@@ -15,5 +15,5 @@ import java.util.List;
  */
  
 public interface LoadLossMapper extends BaseMapper<LoadLoss> {
-    List<LoadLoss> query(@Param("gameId") int gameid, @Param("startDs") String startDs);
+    List<LoadLoss> query(@Param("gameId") int gameid, @Param("endDs") String endDs);
 }

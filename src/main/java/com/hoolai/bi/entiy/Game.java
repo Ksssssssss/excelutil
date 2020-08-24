@@ -3,14 +3,12 @@ package com.hoolai.bi.entiy;
 import com.baomidou.mybatisplus.annotation.TableField;
 
 /**
- *
- *@description: 
- *@author: Ksssss(chenlin@hoolai.com)
- *@time: 2019-12-03 10:49
- * 
+ * @description:
+ * @author: Ksssss(chenlin @ hoolai.com)
+ * @time: 2019-12-03 10:49
  */
 
-public class Game  {
+public class Game {
 
     private int parentId;
 

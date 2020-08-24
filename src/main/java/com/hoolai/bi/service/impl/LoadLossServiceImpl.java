@@ -24,9 +24,9 @@ public class LoadLossServiceImpl implements ReportService {
     private LoadLossMapper loadLossMapper;
 
     @Override
-    public ExcelDatas produceDatas(String startDs, String endDs, int gameId) {
-        List<LoadLoss> loadLosses = loadLossMapper.query(gameId,startDs);
-        Datas datas = new Datas(ReportType.AD_TRACKING, loadLosses);
+    public ExcelDatas produceDatas(String startDs, String endDs, int gameId, int snid) {
+        List<LoadLoss> loadLosses = loadLossMapper.query(gameId,endDs);
+        Datas datas = new Datas(ReportType.LOAD_LOSS, loadLosses);
         return datas;
     }
 }

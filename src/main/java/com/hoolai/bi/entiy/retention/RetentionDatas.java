@@ -4,6 +4,7 @@ import com.google.common.collect.Maps;
 import com.hoolai.bi.excel.ExcelDatas;
 import com.hoolai.bi.entiy.ReportType;
 import com.hoolai.bi.excel.info.ExtraType;
+import lombok.Data;
 import org.springframework.util.CollectionUtils;
 
 import java.util.*;
@@ -15,6 +16,7 @@ import java.util.stream.Collectors;
  * @time: 2019-10-10 17:17
  */
 
+@Data
 public class RetentionDatas implements ExcelDatas {
     private Map<String, List<ShareRetention>> shareRetentions;
     private ReportType type;
@@ -42,32 +44,15 @@ public class RetentionDatas implements ExcelDatas {
             case RETWNTION_CREATIVE:
                 result = shareRetentionList.stream().collect(Collectors.groupingBy(shareRetention -> ((ShareCreativeRetention) shareRetention).getCreative()));
                 break;
+            case RETWNTION_AD:
+                result = shareRetentionList.stream().collect(Collectors.groupingBy(shareRetention -> ((RetentionOfAdId) shareRetention).getAdId()));
+                break;
         }
         return new ArrayList<>(result.values());
     }
 
-    public ExtraType getExtraType() {
-        return extraType;
-    }
-
-    public void setExtraType(ExtraType extraType) {
-        this.extraType = extraType;
-    }
-
-    public Map<String, List<ShareRetention>> getShareRetentions() {
-        return shareRetentions;
-    }
-
-    public void setShareRetentions(Map<String, List<ShareRetention>> shareRetentions) {
-        this.shareRetentions = shareRetentions;
-    }
-
-    public ReportType getType() {
-        return type;
-    }
-
-    public void setType(ReportType type) {
-        this.type = type;
+    public boolean isEmpty(){
+        return CollectionUtils.isEmpty(shareRetentions);
     }
 
 }

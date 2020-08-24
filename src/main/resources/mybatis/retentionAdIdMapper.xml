@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hoolai.bi.mapper.RetentionAdIdMapper">
+
+    <select id="queryRetentionAdIds" resultType="com.hoolai.bi.entiy.retention.RetentionOfAdId">
+        SELECT t_1.gameid,t_1.snid,t_3.retention,t_3.ds,t_1.install_num,t_3.dr,t_3.ad_id ,ROUND(t_3.retention/t_1.install_num,4) retentionPercentages
+        from
+        (SELECT gameid,snid,ds,ad_id,install_num FROM daily_ad_stats WHERE ds>=#{startDs} and ds&lt;=#{endDs}	AND gameid=#{gameId}) t_1
+        JOIN
+        (SELECT ds,dr,retention,ad_id FROM(
+        SELECT DATE_SUB(ds,INTERVAL dr DAY) ds,dr,retention,ad_id
+        FROM
+        retention_adid
+        WHERE
+        gameid=#{gameId}
+        AND
+        ds>=#{startDs}
+        and ds&lt;=#{endDs}) t_2) t_3 ON t_1.ds=t_3.ds AND t_1.ad_id=t_3.ad_id
+        ORDER BY ds,dr
+    </select>
+
+</mapper>

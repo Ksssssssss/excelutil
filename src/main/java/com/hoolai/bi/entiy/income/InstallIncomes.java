@@ -25,10 +25,12 @@ public class InstallIncomes implements ExcelDatas {
     private Map<String, List<InstallIncomeRate>> installIncomeRates;
     private ReportType type;
     private ExtraType extraType;
+    private Game game;
 
-    public InstallIncomes(Map<String, List<InstallIncomeRate>> installIncomeRates, ReportType type, ExtraType extraType) {
+    public InstallIncomes(Map<String, List<InstallIncomeRate>> installIncomeRates,Game game, ReportType type, ExtraType extraType) {
         this.installIncomeRates = installIncomeRates;
         this.type = type;
+        this.game = game;
         this.extraType = extraType;
     }
 
@@ -58,14 +60,14 @@ public class InstallIncomes implements ExcelDatas {
             }
             installIncomeRateList = installIncomeRateList.stream().sorted(Comparator.comparing(installIncomeRate -> installIncomeRate.getIncomeDay())).collect(Collectors.toList());
             InstallIncomeRate maxInstallIncomeRate = installIncomeRateList.get(installIncomeRateList.size() - 1);
-            init(installIncomeRateList, config);
+            init(installIncomeRateList, game);
         }
     }
 
-    private void init(List<InstallIncomeRate> installIncomeRateList, ReportEnvConfig config) {
+    private void init(List<InstallIncomeRate> installIncomeRateList, Game game) {
         for (int i = 0; i < installIncomeRateList.size(); i++) {
             InstallIncomeRate installIncomeRate = installIncomeRateList.get(i);
-            installIncomeRate.init(config);
+            installIncomeRate.init(game);
             if (i == 0)
                 continue;
             float incomeRate = installIncomeRateList.get(i - 1).getIncomeRate();
@@ -83,7 +85,6 @@ public class InstallIncomes implements ExcelDatas {
         if (indexs.size() < 1) {
             return;
         }
-        float incomeRate = 0f;
         for (int i = 1; i <= indexs.size(); i++) {
             for (int j = indexs.get(i - 1); j < row.size(); j++) {
                 if (i == indexs.size()) {

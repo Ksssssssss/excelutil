@@ -3,16 +3,22 @@ package com.hoolai.bi.entiy.duration;
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.alibaba.excel.annotation.format.NumberFormat;
 import com.hoolai.bi.entiy.GameInfo;
+import lombok.Data;
+
+import java.text.DecimalFormat;
+import java.util.Comparator;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
- *
- *@description: 
- *@author: Ksssss(chenlin@hoolai.com)
- *@time: 2019-11-28 19:47
- * 
+ * @description:
+ * @author: Ksssss(chenlin @ hoolai.com)
+ * @time: 2019-11-28 19:47
  */
- 
-public class OnlineDuration extends GameInfo {
+
+@Data
+public class OnlineDuration extends GameInfo{
+
     @ExcelProperty(value = "在线时长")
     private String duration;
     @ExcelProperty(value = "安装人数")
@@ -24,35 +30,22 @@ public class OnlineDuration extends GameInfo {
     @ExcelProperty(value = "次留")
     private float retentionRatio;
 
-    public String getDuration() {
-        return duration;
-    }
+    private static Pattern pattern = Pattern.compile("\\d+");
 
-    public void setDuration(String duration) {
-        this.duration = duration;
-    }
-
-    public int getNumbers() {
-        return numbers;
-    }
-
-    public void setNumbers(int numbers) {
-        this.numbers = numbers;
-    }
-
-    public int getRetentionNumbers() {
-        return retentionNumbers;
-    }
-
-    public void setRetentionNumbers(int retentionNumbers) {
-        this.retentionNumbers = retentionNumbers;
-    }
-
-    public float getRetentionRatio() {
-        return retentionRatio;
-    }
-
-    public void setRetentionRatio(float retentionRatio) {
-        this.retentionRatio = retentionRatio;
-    }
+    public static Comparator<String> comparator = new Comparator<String>() {
+        @Override
+        public int compare(String o1, String o2) {
+            Matcher matcher = pattern.matcher(o1);
+            Matcher matcherTo = pattern.matcher(o2);
+            int num1 = 0;
+            int num2 = 0;
+            while (matcher.find() && matcherTo.find()) {
+                num1 = Integer.parseInt(matcher.group(0));
+                num2 = Integer.parseInt(matcherTo.group(0));
+                break;
+            }
+            return num1 - num2;
+        }
+    };
 }
+

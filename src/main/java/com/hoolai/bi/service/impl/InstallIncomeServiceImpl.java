@@ -1,6 +1,8 @@
 package com.hoolai.bi.service.impl;
 
 import com.google.common.collect.Maps;
+import com.hoolai.bi.context.GameContext;
+import com.hoolai.bi.entiy.Game;
 import com.hoolai.bi.util.DateUtil;
 import com.hoolai.bi.excel.info.ExtraType;
 import com.hoolai.bi.entiy.ReportType;
@@ -28,13 +30,16 @@ public class InstallIncomeServiceImpl implements ReportService {
 
     @Autowired
     private InstallIncomeMapper installIncomeMapper;
+    @Autowired
+    private GameContext gameContext;
 
     @Override
-    public InstallIncomes produceDatas(String startDs, String endDs, int gameId) {
+    public InstallIncomes produceDatas(String startDs, String endDs, int gameId, int snid) {
         List<InstallIncomeRate> installIncomeRateList = installIncomeMapper.queryInstallIncomes(gameId, startDs, endDs);
         Map<String, List<InstallIncomeRate>> result = Maps.newHashMapWithExpectedSize(DateUtil.dateCompare(endDs,startDs));
         result = installIncomeRateList.stream().collect(Collectors.groupingBy(installIncomeRate->installIncomeRate.getDs()));
-        return new InstallIncomes(result, ReportType.INSTALL_INCOME_RATE, ExtraType.INSTALL_INCOME_ALL);
+        Game game = gameContext.get(gameId);
+        return new InstallIncomes(result,game, ReportType.INSTALL_INCOME_RATE, ExtraType.INSTALL_INCOME_ALL);
     }
 
 }

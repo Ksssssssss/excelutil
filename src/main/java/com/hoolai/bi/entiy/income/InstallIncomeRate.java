@@ -1,10 +1,14 @@
 package com.hoolai.bi.entiy.income;
 
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.hoolai.bi.context.GameContext;
 import com.hoolai.bi.context.ReportEnvConfig;
+import com.hoolai.bi.entiy.Game;
 import com.hoolai.bi.util.DateUtil;
 import com.hoolai.bi.excel.info.ExtraType;
 import com.hoolai.bi.entiy.GameInfo;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.text.DecimalFormat;
 import java.util.List;
@@ -31,15 +35,16 @@ public class InstallIncomeRate extends GameInfo {
 
     private DecimalFormat df = new DecimalFormat("0.00");
 
-    public void init(ReportEnvConfig config) {
-        if (DateUtil.dateCompare(ds, config.getChangeRateDs()) < 0) {
-            income *= config.getRate();
+    public void init(Game game) {
+
+        if (installNum == 0|| income == 0){
+            return;
         }
-        incomeRate = (float) income / installNum / 1000;
+        incomeRate = (float) income / installNum / game.getCurrencyRate();
     }
 
     public void fullRow(List<Object> row, ExtraType type) {
-        if (incomeRate == 0){
+        if (incomeRate <= 0.00){
             return;
         }
         row.set(incomeDay + type.getNeedRowLength() + 1, df.format(incomeRate));

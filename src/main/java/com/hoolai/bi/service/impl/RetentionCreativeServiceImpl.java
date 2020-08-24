@@ -26,7 +26,7 @@ public class RetentionCreativeServiceImpl implements ReportService {
     private RetentionCreativeMapper retentionCreativeMapper;
 
     @Override
-    public RetentionDatas produceDatas(String startDs, String endDs, int gameId) {
+    public RetentionDatas produceDatas(String startDs, String endDs, int gameId, int snid) {
         List<ShareCreativeRetention> retentionResultTypes = retentionCreativeMapper.queryRetentionCreative(gameId, startDs, endDs);
         Map<String, List<ShareRetention>> shareRetentionMap = retentionResultTypes.stream().collect(Collectors.groupingBy(retention -> retention.getDs()));
         return new RetentionDatas(shareRetentionMap, ReportType.RETWNTION_CREATIVE,ExtraType.CREATIVE);

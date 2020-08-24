@@ -1,17 +1,13 @@
 package com.hoolai.bi.entiy.daily;
 
-import com.alibaba.excel.annotation.ExcelIgnore;
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.alibaba.excel.annotation.format.NumberFormat;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.hoolai.bi.context.GameContext;
 import com.hoolai.bi.context.ReportEnvConfig;
-import com.hoolai.bi.util.DateUtil;
 import com.hoolai.bi.entiy.GameInfo;
-import com.hoolai.bi.util.SpringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.Data;
 import org.springframework.stereotype.Component;
-import sun.tools.tree.Context;
 
 /**
  * @description:
@@ -20,6 +16,7 @@ import sun.tools.tree.Context;
  */
 
 @Component
+@Data
 public abstract class DailyStats extends GameInfo {
     @ExcelProperty(value = "活跃")
     private int dauNum;
@@ -74,8 +71,8 @@ public abstract class DailyStats extends GameInfo {
     public DailyStats() {
     }
 
-    public void init(ReportEnvConfig config) {
-        initRate(config.getChangeRateDs(), config.getRate());
+    public void init(GameContext gameContext) {
+        initRate(gameContext);
         arpu = String.format("%.2f", checkDivide(payAmount, dauNum));
         arppu = String.format("%.2f", checkDivide(payAmount, payCount));
         payRate = String.format("%.2f", checkDivide(payCount, dauNum) * 100) + "%";
@@ -84,150 +81,11 @@ public abstract class DailyStats extends GameInfo {
         installArppu = String.format("%.2f", checkDivide(payInstallAmount, payInstallCount));
     }
 
-    private void initRate(String changeRateDs, int rate) {
+    private void initRate(GameContext gameContext) {
         float currencyRate = gameContext.get(gameid).getCurrencyRate();
         payAmount /= currencyRate;
         payInstallAmount /= currencyRate;
         newPayAmount /= currencyRate;
     }
 
-    public boolean checkZero() {
-        return false;
-    }
-
-    public int getDauNum() {
-        return dauNum;
-    }
-
-    public void setDauNum(int dauNum) {
-        this.dauNum = dauNum;
-    }
-
-    public int getInstallNum() {
-        return installNum;
-    }
-
-    public void setInstallNum(int installNum) {
-        this.installNum = installNum;
-    }
-
-    public int getPayCount() {
-        return payCount;
-    }
-
-    public void setPayCount(int payCount) {
-        this.payCount = payCount;
-    }
-
-    public float getPayAmount() {
-        return payAmount;
-    }
-
-    public void setPayAmount(float payAmount) {
-        this.payAmount = payAmount;
-    }
-
-    public int getPayTimes() {
-        return payTimes;
-    }
-
-    public void setPayTimes(int payTimes) {
-        this.payTimes = payTimes;
-    }
-
-    public int getPayInstallCount() {
-        return payInstallCount;
-    }
-
-    public void setPayInstallCount(int payInstallCount) {
-        this.payInstallCount = payInstallCount;
-    }
-
-    public float getPayInstallAmount() {
-        return payInstallAmount;
-    }
-
-    public void setPayInstallAmount(float payInstallAmount) {
-        this.payInstallAmount = payInstallAmount;
-    }
-
-    public int getPayInstallTimes() {
-        return payInstallTimes;
-    }
-
-    public void setPayInstallTimes(int payInstallTimes) {
-        this.payInstallTimes = payInstallTimes;
-    }
-
-    public int getNewPayCount() {
-        return newPayCount;
-    }
-
-    public void setNewPayCount(int newPayCount) {
-        this.newPayCount = newPayCount;
-    }
-
-    public float getNewPayAmount() {
-        return newPayAmount;
-    }
-
-    public void setNewPayAmount(float newPayAmount) {
-        this.newPayAmount = newPayAmount;
-    }
-
-    public int getNewPayTimes() {
-        return newPayTimes;
-    }
-
-    public void setNewPayTimes(int newPayTimes) {
-        this.newPayTimes = newPayTimes;
-    }
-
-    public String getArpu() {
-        return arpu;
-    }
-
-    public void setArpu(String arpu) {
-        this.arpu = arpu;
-    }
-
-    public String getArppu() {
-        return arppu;
-    }
-
-    public void setArppu(String arppu) {
-        this.arppu = arppu;
-    }
-
-    public String getPayRate() {
-        return payRate;
-    }
-
-    public void setPayRate(String payRate) {
-        this.payRate = payRate;
-    }
-
-    public String getInstallPayRate() {
-        return installPayRate;
-    }
-
-    public void setInstallPayRate(String installPayRate) {
-        this.installPayRate = installPayRate;
-    }
-
-    public String getInstallArpu() {
-        return installArpu;
-    }
-
-    public void setInstallArpu(String installArpu) {
-        this.installArpu = installArpu;
-    }
-
-    public String getInstallArppu() {
-        return installArppu;
-    }
-
-    public void setInstallArppu(String installArppu) {
-        this.installArppu = installArppu;
-    }
 }

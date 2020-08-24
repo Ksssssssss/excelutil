@@ -18,6 +18,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -89,9 +91,36 @@ public class BiApplicationTests {
         }
         long end = System.currentTimeMillis();
         System.out.println("end::" + System.currentTimeMillis());
-        System.out.println(end-start);
-
+        System.out.println(end - start);
     }
+
+    @Test
+    public void regex() {
+
+//        Pattern pattern = Pattern.compile("\\d+");
+//
+//        Matcher matcher = pattern.matcher("1-5分钟");
+//        while (matcher.find()) {
+//            System.out.println(matcher.group(0));
+//        }
+
+        Set<String> keys = new HashSet<>();
+        keys.add("1-5分钟");
+        keys.add("5-10分钟");
+        keys.add("大于30分钟");
+
+        Pattern pattern = Pattern.compile("\\d+");
+//        String
+//
+//        Matcher matcher2 = pattern.matcher(k1);
+//        int res2 = 0;
+//        while (matcher2.find()) {
+//            res1 = Integer.parseInt(matcher2.group(0));
+//            break;
+//        }
+//        return res1 - res2;
+//    });
+}
 
     @Test
     public void enumTest() {

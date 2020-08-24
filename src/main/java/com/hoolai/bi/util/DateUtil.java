@@ -1,6 +1,7 @@
 package com.hoolai.bi.util;
 
 import javax.xml.crypto.Data;
+import java.io.FileInputStream;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -37,14 +38,14 @@ public class DateUtil {
     public static int dateCompare(String endDate, String startDate) {
         Date startDs;
         Date endDs;
-        long flag = -1;
+        long res = -1;
         try {
             startDs = df.parse(startDate);
             endDs = df.parse(endDate);
-            flag = (endDs.getTime() - startDs.getTime()) / (1000 * 3600 * 24);
+            res = (endDs.getTime() - startDs.getTime()) / (1000 * 3600 * 24);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return (int) flag;
+        return (int) res;
     }
 }

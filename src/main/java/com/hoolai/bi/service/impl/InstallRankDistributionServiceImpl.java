@@ -31,7 +31,7 @@ public class InstallRankDistributionServiceImpl implements ReportService {
     private RankDistributionsMapper rankDistributionsMapper;
 
     @Override
-    public ExcelDatas produceDatas(String startDs, String endDs, int gameId) {
+    public ExcelDatas produceDatas(String startDs, String endDs, int gameId, int snid) {
         Map<String, List<RankDistribution>> result = Maps.newHashMapWithExpectedSize(DateUtil.dateCompare(endDs,startDs));
         List<RankDistribution> rankDistributionList = rankDistributionsMapper.queryInstallRanks(gameId,startDs,endDs);
         result = rankDistributionList.stream().collect(Collectors.groupingBy(rankDistribution->rankDistribution.getDs()));

@@ -11,11 +11,13 @@ public class QueryInfo {
     private int gameid;
     private String startDs;
     private String endDs;
+    private int snid;
 
-    public QueryInfo(String startDs, String endDs, int gameid) {
+    public QueryInfo(String startDs, String endDs, int gameid,int snid) {
         this.gameid = gameid;
         this.startDs = startDs;
         this.endDs = endDs;
+        this.snid = snid;
     }
 
     public int getGameid() {
@@ -40,5 +42,13 @@ public class QueryInfo {
 
     public void setEndDs(String endDs) {
         this.endDs = endDs;
+    }
+
+    public int getSnid() {
+        return snid;
+    }
+
+    public void setSnid(int snid) {
+        this.snid = snid;
     }
 }

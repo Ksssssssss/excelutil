@@ -20,13 +20,13 @@ public class RankDistributions implements ExcelDatas {
     private ReportType type;
     private ExtraType extraType;
 
-    public RankDistributions(Map<String, List<RankDistribution>> rankDistributions, ReportType type,ExtraType extraType) {
+    public RankDistributions(Map<String, List<RankDistribution>> rankDistributions, ReportType type, ExtraType extraType) {
         this.rankDistributions = rankDistributions;
         this.type = type;
         this.extraType = extraType;
     }
 
-    public void init(){
+    public void init() {
         rankDistributions.values().stream().forEach(rankDistributions1 -> rankDistributions1.stream().forEach(rankDistribution -> rankDistribution.init()));
     }
 
@@ -39,6 +39,14 @@ public class RankDistributions implements ExcelDatas {
             }
         }
         return maxLevel;
+    }
+
+    public int minLevel() {
+        int minLevel = 0;
+        for (List<RankDistribution> rankDistributionList : rankDistributions.values()) {
+            minLevel = rankDistributionList.stream().min(Comparator.comparing(RankDistribution::getLevel)).get().getLevel();
+        }
+        return minLevel;
     }
 
     public ReportType getType() {

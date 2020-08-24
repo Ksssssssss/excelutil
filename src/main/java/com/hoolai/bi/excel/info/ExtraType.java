@@ -3,6 +3,7 @@ package com.hoolai.bi.excel.info;
 import com.hoolai.bi.entiy.GameInfo;
 import com.hoolai.bi.entiy.income.InstallIncomeRate;
 import com.hoolai.bi.entiy.rank.RankDistribution;
+import com.hoolai.bi.entiy.retention.RetentionOfAdId;
 import com.hoolai.bi.entiy.retention.ShareCreativeRetention;
 import com.hoolai.bi.entiy.retention.ShareOsRetention;
 
@@ -10,13 +11,13 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * @description:
+ * @description:额外字段
  * @author: Ksssss(chenlin @ hoolai.com)
  * @time: 2019-10-10 15:11
  */
 
 public enum ExtraType {
-    ALL(1, Arrays.asList("日期","安装数")){
+    SIMPLE(1, Arrays.asList("日期","安装数")){
         @Override
         public void addExtraCell(List<Object> row, GameInfo gameInfo) {
             return;
@@ -51,7 +52,33 @@ public enum ExtraType {
         public void addExtraCell(List<Object> row, GameInfo gameInfo) {
             row.add(((RankDistribution) gameInfo).getTotalNumbers());
         }
-    };
+    },
+    HOUR_DAU(1,Arrays.asList("日期/人数","活跃人数")){
+        @Override
+        public void addExtraCell(List<Object> row, GameInfo gameInfo) {
+
+        }
+    },
+    HOUR_INSTALL(1,Arrays.asList("日期/人数","安装人数")){
+        @Override
+        public void addExtraCell(List<Object> row, GameInfo gameInfo) {
+
+        }
+    },
+    AD_ID(2,Arrays.asList("日期","广告","安装数")){
+        @Override
+        public void addExtraCell(List<Object> row, GameInfo gameInfo) {
+            row.add(((RetentionOfAdId)gameInfo).getAdId());
+        }
+    },
+
+    EXTRA(3,Arrays.asList("人数","留存用户数","留存率")){
+        @Override
+        public void addExtraCell(List<Object> row, GameInfo gameInfo) {
+            return;
+        }
+    }
+    ;
 
 
     private int needRowLength;

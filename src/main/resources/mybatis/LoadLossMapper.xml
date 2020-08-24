@@ -3,10 +3,11 @@
 <mapper namespace="com.hoolai.bi.mapper.LoadLossMapper">
 
     <select id="query" resultType="com.hoolai.bi.entiy.loadloss.LoadLoss">
-    SELECT
-	snid,gameid,ds,step,numbers,description
+       SELECT
+	snid,t_1.gameid gameid,ds,step,numbers,ROUND(numbers/install_num,4) rate,description,priority
 FROM
-	( SELECT snid, gameid, ds, step, numbers FROM load_loss WHERE snid = 1 AND gameid = #{gameId} AND ds = #{ds} ) t_1
-	JOIN ( SELECT id, description FROM recode_desc WHERE gameid = #{gameId} AND snid = 1 ) t_2 ON t_1.step = t_2.id
-    </select>
+	( SELECT snid, gameid, ds, step, numbers FROM load_loss WHERE snid = 1 AND gameid = #{gameId} AND ds = #{endDs} ) t_1
+	JOIN ( SELECT id, description,priority FROM recode_desc WHERE gameid = #{gameId} AND snid = 1 ) t_2 ON t_1.step = t_2.id
+  JOIN ( SELECT gameid,install_num FROM daily_stats WHERE gameid = #{gameId} AND snid = 1 AND ds = #{endDs}) t_3 ON t_1.gameid= t_3.gameid
+</select>
 </mapper>

@@ -1,4 +1,4 @@
-package com.hoolai.bi.excel.behavior;
+package com.hoolai.bi.entiy.retention;
 
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.ExcelWriter;
@@ -24,11 +24,9 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- *
- *@description: 
- *@author: Ksssss(chenlin@hoolai.com)
- *@time: 2019-10-16 17:22
- * 
+ * @description:
+ * @author: Ksssss(chenlin @ hoolai.com)
+ * @time: 2019-10-16 17:22
  */
 
 public class RetentionWriterBehavior implements ExcelWriterBehavior {
@@ -43,11 +41,20 @@ public class RetentionWriterBehavior implements ExcelWriterBehavior {
     @Override
     public void write(int index, ExcelDatas reportDatas, ExcelWriter excelWriter, ExcelStyleStrategy excelStyleStrategy, QueryInfo info) {
         WriteSheet writeSheet;
-        RetentionDatas retentionDatas = (RetentionDatas)reportDatas;
-        writeSheet = EasyExcel.writerSheet(index, retentionDatas.getType().getName()).needHead(Boolean.FALSE).build();
+        RetentionDatas retentionDatas = (RetentionDatas) reportDatas;
+        if (retentionDatas.isEmpty()){
+            return;
+        }
+        writeSheet = EasyExcel.writerSheet(index, retentionDatas.getType()
+                .getName())
+                .needHead(Boolean.FALSE)
+                .build();
         List<List<Object>> rows = rows(info.getStartDs(), info.getEndDs(), retentionDatas);
-        List<List<String>> headList = heads(info.getStartDs(),info.getEndDs(),retentionDatas.getExtraType());
-        WriteTable table = EasyExcel.writerTable(0).registerWriteHandler(excelStyleStrategy.customCellStyle()).needHead(true).build();
+        List<List<String>> headList = heads(info.getStartDs(), info.getEndDs(), retentionDatas.getExtraType());
+        WriteTable table = EasyExcel.writerTable(0)
+                .registerWriteHandler(excelStyleStrategy.customCellStyle())
+                .needHead(true)
+                .build();
         table.setHead(headList);
         excelWriter.write(rows, writeSheet, table);
     }
@@ -60,7 +67,7 @@ public class RetentionWriterBehavior implements ExcelWriterBehavior {
         for (String ds = endDs; DateUtil.dateCompare(ds, startDs) >= 0; ds = DateUtil.dateCalculate(ds, -1)) {
             intervalDay = DateUtil.dateCompare(endDs, ds);
             intervalDay = chooseSuitDayNum(intervalDay);
-            if (intervalDay <= 0) continue ;
+            if (intervalDay <= 0) continue;
 
             List<List<ShareRetention>> shareRetentionLists = excelDatas.groupAndGetKey(ds);
             if (CollectionUtils.isEmpty(shareRetentionLists)) {
@@ -68,7 +75,7 @@ public class RetentionWriterBehavior implements ExcelWriterBehavior {
             }
 
             for (List<ShareRetention> shareRetentionList : shareRetentionLists) {
-                List<Object> row = fullRow(intervalDay, suitDay, ds, shareRetentionList,excelDatas.getExtraType());
+                List<Object> row = fullRow(intervalDay, suitDay, ds, shareRetentionList, excelDatas.getExtraType());
                 rows.add(new ArrayList<>(row));
             }
 

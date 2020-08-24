@@ -1,7 +1,9 @@
 package com.hoolai.bi.entiy.daily;
 
 import com.alibaba.excel.annotation.ExcelProperty;
+import com.hoolai.bi.context.GameContext;
 import com.hoolai.bi.context.ReportEnvConfig;
+import lombok.Data;
 
 import java.util.Optional;
 
@@ -11,6 +13,7 @@ import java.util.Optional;
  * @time: 2019-10-12 16:36
  */
 
+@Data
 public class DailyAllStats extends DailyStats {
 
     @ExcelProperty(value = {"活跃", "android"}, index = 2)
@@ -41,9 +44,27 @@ public class DailyAllStats extends DailyStats {
     @ExcelProperty(value = "人均停留时长(秒)", index = 14)
     private String averageStayTime;
 
+    @ExcelProperty(value = "周活跃", index = 15)
+    private int wau;
+    @ExcelProperty(value = "月活跃", index = 16)
+    private int mau;
+    @ExcelProperty(value = "周安装", index = 17)
+    private int wnu;
+    @ExcelProperty(value = "月安装", index = 18)
+    private int mnu;
+
+    @ExcelProperty(value = "周付费", index = 19)
+    private float weekPay;
+    @ExcelProperty(value = "月付费", index = 20)
+    private float monthPay;
+
     @Override
-    public void init(ReportEnvConfig config) {
-        super.init(config);
+    public void init(GameContext gameContext) {
+        super.init(gameContext);
+        float rate = gameContext.get(gameid).getCurrencyRate();
+        weekPay /= rate;
+        monthPay /= rate;
+
         dauAndroidRate = changeRate(dauAndroidRate);
         dauIosRate = changeRate(dauIosRate);
         dauUnknownRate = changeRate(dauUnknownRate);
@@ -57,100 +78,18 @@ public class DailyAllStats extends DailyStats {
         return String.format("%.2f", Float.parseFloat(optional.orElse("0")) * 100) + "%";
     }
 
-
-    public String getDauAndroidRate() {
-        return dauAndroidRate;
+    public void initExtra(WeekInfo week, MonthInfo month) {
+        this.wau = week.getWdu();
+        this.wnu = week.getWnu();
+        this.mau = month.getMdu();
+        this.mnu = month.getMnu();
+        this.weekPay = week.getWeekPayment();
+        this.monthPay = month.getMonthPayment();
     }
 
-    public void setDauAndroidRate(String dauAndroidRate) {
-        this.dauAndroidRate = dauAndroidRate;
+    public void initPay(int weekPay, int monthPay) {
+        this.weekPay = weekPay;
+        this.monthPay = monthPay;
     }
 
-    public String getDauIosRate() {
-        return dauIosRate;
-    }
-
-    public void setDauIosRate(String dauIosRate) {
-        this.dauIosRate = dauIosRate;
-    }
-
-    public String getDauUnknownRate() {
-        return dauUnknownRate;
-    }
-
-    public void setDauUnknownRate(String dauUnknownRate) {
-        this.dauUnknownRate = dauUnknownRate;
-    }
-
-    public String getInstallAndroidRate() {
-        return installAndroidRate;
-    }
-
-    public void setInstallAndroidRate(String installAndroidRate) {
-        this.installAndroidRate = installAndroidRate;
-    }
-
-    public String getInstallIosRate() {
-        return installIosRate;
-    }
-
-    public void setInstallIosRate(String installIosRate) {
-        this.installIosRate = installIosRate;
-    }
-
-    public String getInstallUnknownRate() {
-        return installUnknownRate;
-    }
-
-    public void setInstallUnknownRate(String installUnknownRate) {
-        this.installUnknownRate = installUnknownRate;
-    }
-
-    public int getExchangeMyTimes() {
-        return exchangeMyTimes;
-    }
-
-    public void setExchangeMyTimes(int exchangeMyTimes) {
-        this.exchangeMyTimes = exchangeMyTimes;
-    }
-
-    public int getExchangeMyNums() {
-        return exchangeMyNums;
-    }
-
-    public void setExchangeMyNums(int exchangeMyNums) {
-        this.exchangeMyNums = exchangeMyNums;
-    }
-
-    public String getExchangeMyAmount() {
-        return exchangeMyAmount;
-    }
-
-    public void setExchangeMyAmount(String exchangeMyAmount) {
-        this.exchangeMyAmount = exchangeMyAmount;
-    }
-
-    public String getVisits() {
-        return visits;
-    }
-
-    public void setVisits(String visits) {
-        this.visits = visits;
-    }
-
-    public String getAverageVisits() {
-        return averageVisits;
-    }
-
-    public void setAverageVisits(String averageVisits) {
-        this.averageVisits = averageVisits;
-    }
-
-    public String getAverageStayTime() {
-        return averageStayTime;
-    }
-
-    public void setAverageStayTime(String averageStayTime) {
-        this.averageStayTime = averageStayTime;
-    }
 }
